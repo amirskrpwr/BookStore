@@ -32,10 +32,11 @@ function addCookieItem(bookId, action) {
             delete cart[bookId];
         }
     }
+
     console.log("Cart", cart);
     document.cookie = "cart=" + JSON.stringify(cart) + ";domain=;path=/";
 
-    // location.reload();
+    location.reload();
 }
 
 function updateUserOrder(bookId, action) {
@@ -60,6 +61,5 @@ function updateUserOrder(bookId, action) {
         })
         .then((data) => {
             console.log("Data:", data);
-            // location.reload();
         });
 }
