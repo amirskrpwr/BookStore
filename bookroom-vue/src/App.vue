@@ -83,9 +83,11 @@
           </div>
 
           <router-link to="/cart"
-            ><img src="@/assets/images/cart.png" alt="" id="cart-icon" />
+            ><img src="@/assets/images/cart.png" alt="cart" id="cart-icon" />
+            <span class="translate-middle badge rounded-pill bg-warning">
+              {{ cartTotalLength }}
+            </span>
           </router-link>
-          <p id="cart-total">{{ cartTotalLength }}</p>
         </div>
       </div>
     </nav>
@@ -135,9 +137,8 @@ export default {
   },
 
   mounted() {
-    this.getCategoryList();
-    this.getUserInfo();
     this.cart = this.$store.state.cart;
+    this.getCategoryList();
     console.log("category list: ", this.categoryList);
   },
 
@@ -160,30 +161,13 @@ export default {
         })
         .catch((err) => console.log(err));
     },
-    getUserInfo() {
-      // this.$store.state.isAuthenticated
-      //   ? axios({
-      //       method: "get",
-      //       url: "http://127.0.0.1:8000/api/v1/users/me/",
-      //       auth: {
-      //         username: "amir",
-      //         password: "amiramir",
-      //       },
-      //     })
-      //       .then((res) => {
-      //         // this.userInfo = res.data;
-      //         console.log(res.data);
-      //       })
-      //       .catch((err) => console.log(err))
-      //   : null;
-    },
   },
 };
 </script>
 
 <style scoped>
 #cart-icon {
-  width: 25px;
+  width: 30px;
   display: inline-block;
   margin-left: 15px;
 }

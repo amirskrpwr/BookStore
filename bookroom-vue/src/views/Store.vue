@@ -30,6 +30,7 @@ export default {
         .get("/api/v1/book_list/")
         .then((res) => {
           this.bookList = res.data;
+          console.log(this.bookList);
         })
         .catch((err) => console.log(err));
 

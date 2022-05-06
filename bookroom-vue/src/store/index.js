@@ -38,8 +38,8 @@ export default createStore({
             state.isAuthenticated = false;
             state.token = "";
             state.isLoading = false;
-            username = "";
-            password = "";
+            state.username = "";
+            state.password = "";
 
             localStorage.setItem("cart", JSON.stringify(state.cart));
             localStorage.setItem(
@@ -48,8 +48,8 @@ export default createStore({
             );
             localStorage.setItem("isLoading", JSON.stringify(state.isLoading));
             localStorage.setItem("token", state.token);
-            localStorage.setItem("username", username);
-            localStorage.setItem("password", password);
+            localStorage.setItem("username", state.username);
+            localStorage.setItem("password", state.password);
             console.log(state);
         },
 
@@ -69,6 +69,12 @@ export default createStore({
             state.cart.items = state.cart.items.filter(
                 (i) => i.book.id !== item.book.id
             );
+            localStorage.setItem("cart", JSON.stringify(state.cart));
+        },
+
+        clearCart(state) {
+            state.cart.items = [];
+
             localStorage.setItem("cart", JSON.stringify(state.cart));
         },
 

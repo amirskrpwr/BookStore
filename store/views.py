@@ -1,11 +1,15 @@
 from django.http import Http404
+from django.db.models import Q
+from django.shortcuts import render
+from django.contrib.auth.models import User
+
+from rest_framework import status, authentication,permissions
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from .serializers import *
-from django.db.models import Q
 
 from .models import *
+from .serializers import *
 
 # Create your views here.
 class BookList(APIView):
@@ -37,13 +41,6 @@ class CategoryList(APIView):
         categories = Category.objects.all()
         serializer = CategoriesSerializer(categories, many=True)
         return Response(serializer.data)
-
-class ShippingAddressList(APIView):
-    def get(self, request, format=None):
-        shippingAddresses = ShippingAddress.objects.all()
-        serializer = ShippingAddressesSerializer(shippingAddresses, many=True)
-        return Response(serializer.data)
-
 
 class BookDetail(APIView):
     def get_object(self, category_slug, book_slug):
@@ -80,3 +77,36 @@ def search(request):
         return Response(serializer.data)
     else:
         return Response({"books":[]})
+
+@api_view(['POST'])
+@authentication_classes([authentication.TokenAuthentication])
+@permission_classes([permissions.IsAuthenticated])
+def checkout(request):
+    order = Order.objects.create(
+        user = request.user,
+        complete = request.data['complete'],
+        state = request.data['state'],        
+        city = request.data['city'],        
+        address = request.data['address'],        
+    )
+
+    orderItems = []
+    for item in request.data['orderItems']:
+        orderItem = OrderItem.objects.create(
+            book = Book.objects.get(id=item['book']['id']),
+            order = order,
+            quantity = item['quantity'],
+        )
+        orderItems.append(orderItem)
+
+    return Response({"data":"Successfully added."}, status=status.HTTP_201_CREATED)
+
+
+class MyOrderList(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, format=None):
+        orders = Order.objects.filter(user=request.user)
+        serializer = MyOrdersSerializer(orders, many=True)
+        return Response(serializer.data)

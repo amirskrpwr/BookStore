@@ -10,19 +10,7 @@ class Customer (models.Model):
 
     def __str__(self):
         return "Customer " + str(self.id)
-        
-    @property
-    def orders(self):
-        return self.order_set.all()
-
-    # @property
-    # def user(self):
-    #     return self.user
-
-    @property
-    def shippingAddresses(self):
-        return self.shippingaddress_set.all()
-
+    
        
 class Category(models.Model):
     name = models.CharField(max_length=255, )
@@ -71,30 +59,20 @@ class Book(models.Model):
 
     
 class Order(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     date_order = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=True, null=True, blank=False)
-    transaction_id = models.CharField(max_length=200, null=True)
+    address = models.CharField(max_length=200, null=True)
+    city = models.CharField(max_length=200, null=True)
+    state = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return str(self.id)
 
-    @property
-    def shipping(self):
-        shipping = False
-        orderitems = self.orderitem_set.all()
-        for item in orderitems:
-            if item.book.digital == False:
-                shipping = True
-        return shipping
         
     @property
     def orderItems(self):
         return self.orderitem_set.all()
-
-    @property
-    def shippingAddresses(self):
-        return self.shippingaddress_set.all()
 
 
 class OrderItem(models.Model):
@@ -103,17 +81,3 @@ class OrderItem(models.Model):
     quantity = models.IntegerField(default=0,null=True,blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
 
-
-
-class ShippingAddress(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)
-    order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True, null=True)
-    address = models.CharField(max_length=200, null=True)
-    city = models.CharField(max_length=200, null=True)
-    state = models.CharField(max_length=200, null=True)
-    zipcode = models.CharField(max_length=200, null=True)
-    date_added = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.address
-        
