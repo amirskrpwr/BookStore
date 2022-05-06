@@ -2,34 +2,9 @@
   <div class="row">
     <div class="col-lg-6">
       <div class="box-element" id="form-wrapper">
-        <form action="" id="form">
-          <div id="user-info">
-            <div class="form-info">
-              <div class="form-field">
-                <input
-                  required
-                  placeholder="name.."
-                  type="text"
-                  name="name"
-                  id=""
-                  class="form-control"
-                />
-              </div>
-              <div class="form-field">
-                <input
-                  required
-                  placeholder="email.."
-                  type="email"
-                  name="email"
-                  id=""
-                  class="form-control"
-                />
-              </div>
-            </div>
-          </div>
+        <form @submit.prevent="submitForm" class="p-2" action="" id="form">
           <div id="shipping-info">
-            <hr />
-            <p>Shipping Infromation:</p>
+            <h3>Shipping Infromation:</h3>
             <hr />
             <div class="form-field">
               <input
@@ -37,6 +12,7 @@
                 placeholder="Address.."
                 name="address"
                 id="address"
+                v-model="address"
                 class="form-control"
               />
             </div>
@@ -46,6 +22,7 @@
                 placeholder="City.."
                 name="city"
                 id="city"
+                v-model="city"
                 class="form-control"
               />
             </div>
@@ -55,24 +32,7 @@
                 placeholder="State.."
                 name="state"
                 id="state"
-                class="form-control"
-              />
-            </div>
-            <div class="form-field">
-              <input
-                type="text"
-                placeholder="Zipcode.."
-                name="zipcode"
-                id="zipcode"
-                class="form-control"
-              />
-            </div>
-            <div class="form-field">
-              <input
-                type="text"
-                placeholder="Country.."
-                name="country"
-                id="country"
+                v-model="state"
                 class="form-control"
               />
             </div>
@@ -80,11 +40,15 @@
           <hr />
           <input
             type="submit"
-            class="btn btn-success btn-block"
+            class="btn btn-success"
             id="form-button"
             value="Continue"
           />
         </form>
+
+        <div class="p-3 mb-2 bg-danger text-white" v-if="errors.length">
+          <p v-for="error in errors" :key="error.id">{{ error }}</p>
+        </div>
       </div>
       <br />
       <div class="box-element hidden" id="payment-info">
@@ -94,49 +58,57 @@
     </div>
     <div class="col-lg-6">
       <div class="box-element">
-        <router-link to="/cart" class="btn btn-outline-dark">
-          Back to cart
-        </router-link>
-        <hr />
-        <h3>Order Summary</h3>
-        <hr />
-        <div v-for="item in cart.items" :key="item.id" class="cart-row">
-          <div style="flex: 2">
-            <router-link :to="item.book.get_absolute_url">
-              <img
-                :src="item.book.get_image"
-                :alt="item.book.name"
-                class="row-image"
-              />
-            </router-link>
+        <div class="p-2">
+          <router-link to="/cart" class="btn btn-outline-dark">
+            Back to cart
+          </router-link>
+          <hr />
+          <h3>Order Summary</h3>
+          <hr />
+          <div v-for="item in cart.items" :key="item.id" class="cart-row">
+            <div style="flex: 2">
+              <router-link :to="item.book.get_absolute_url">
+                <img
+                  :src="item.book.get_image"
+                  :alt="item.book.name"
+                  class="row-image"
+                />
+              </router-link>
+            </div>
+            <div style="flex: 2">
+              <p>{{ item.book.name }}</p>
+            </div>
+            <div style="flex: 1">
+              <p>
+                ${{
+                  numberByCommas((item.book.price * item.quantity).toFixed(2))
+                }}
+              </p>
+            </div>
+            <div style="flex: 1">
+              <p>x{{ item.quantity }}</p>
+            </div>
           </div>
-          <div style="flex: 2">
-            <p>{{ item.book.name }}</p>
-          </div>
-          <div style="flex: 1">
-            <p>
-              ${{
-                numberByCommas((item.book.price * item.quantity).toFixed(2))
-              }}
-            </p>
-          </div>
-          <div style="flex: 1">
-            <p>x{{ item.quantity }}</p>
-          </div>
+          <h5>Items: {{ numberByCommas(getTotalCount) }}</h5>
+          <h5>Total: ${{ numberByCommas(getTotalAmount.toFixed(2)) }}</h5>
         </div>
-        <h5>Items: {{ numberByCommas(getTotalCount) }}</h5>
-        <h5>Total: ${{ numberByCommas(getTotalAmount.toFixed(2)) }}</h5>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "checkout",
   data() {
     return {
       cart: { items: [] },
+      state: "",
+      city: "",
+      address: "",
+      errors: [],
     };
   },
   mounted() {
@@ -162,6 +134,46 @@ export default {
   methods: {
     numberByCommas(number) {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+
+    async submitForm() {
+      this.errors = [];
+
+      if (this.state === "") {
+        this.errors.push("The state is missing.");
+      }
+
+      if (this.city === "") {
+        this.errors.push("The city is missing.");
+      }
+      if (this.address === "") {
+        this.errors.push("The address is missing.");
+      }
+
+      const data = {
+        complete: true,
+        orderItems: this.cart.items,
+        state: this.state,
+        city: this.city,
+        address: this.address,
+      };
+
+      if (!this.errors.length) {
+        this.$store.commit("setIsLoading", true);
+
+        await axios
+          .post("api/v1/checkout/", data)
+          .then((res) => {
+            this.$store.commit("clearCart");
+            this.$router.push("/cart/success");
+          })
+          .catch((err) => {
+            this.errors.push("something went wrong. please try again.");
+            console.log(err);
+          });
+
+        this.$store.commit("setIsLoading", false);
+      }
     },
   },
 };
