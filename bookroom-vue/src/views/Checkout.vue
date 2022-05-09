@@ -79,18 +79,14 @@
               <p>{{ item.book.name }}</p>
             </div>
             <div style="flex: 1">
-              <p>
-                ${{
-                  numberByCommas((item.book.price * item.quantity).toFixed(2))
-                }}
-              </p>
+              <p>${{ numberByCommas(item.book.price * item.quantity) }}</p>
             </div>
             <div style="flex: 1">
               <p>x{{ item.quantity }}</p>
             </div>
           </div>
           <h5>Items: {{ numberByCommas(getTotalCount) }}</h5>
-          <h5>Total: ${{ numberByCommas(getTotalAmount.toFixed(2)) }}</h5>
+          <h5>Total: ${{ numberByCommas(getTotalAmount) }}</h5>
         </div>
       </div>
     </div>

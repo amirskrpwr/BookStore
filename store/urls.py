@@ -12,4 +12,8 @@ urlpatterns = [
     path('order_list/', views.OrderList.as_view(), name="order_list"),
     path('order_item_list/', views.OrderItemList.as_view(), name="order_item_list"),
     path('customer_list/', views.CustomerList.as_view(), name="customer_list"),
+    path('author_list/', views.AuthorList.as_view(), name="author_list"),
+    path('authors/<slug:author_slug>/', views.AuthorDetail.as_view()),
+    path('publisher_list/', views.PublisherList.as_view(), name="publisher_list"),
+    path('publishers/<slug:publisher_slug>/', views.PublisherDetail.as_view()),
 ]
