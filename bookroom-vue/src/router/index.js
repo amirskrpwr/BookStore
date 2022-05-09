@@ -70,6 +70,30 @@ const routes = [{
             import ("../views/Success.vue"),
         meta: { requireLogin: true },
     },
+    {
+        path: "/authors",
+        name: "AuthorList",
+        component: () =>
+            import ("../views/AuthorList.vue"),
+    },
+    {
+        path: "/authors/:author_slug/",
+        name: "Author",
+        component: () =>
+            import ("../views/Author.vue"),
+    },
+    {
+        path: "/publishers",
+        name: "PublisherList",
+        component: () =>
+            import ("../views/PublisherList.vue"),
+    },
+    {
+        path: "/publishers/:publisher_slug/",
+        name: "Publisher",
+        component: () =>
+            import ("../views/Publisher.vue"),
+    },
 ];
 
 const router = createRouter({

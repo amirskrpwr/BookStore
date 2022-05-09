@@ -42,6 +42,42 @@ class CategoryList(APIView):
         serializer = CategoriesSerializer(categories, many=True)
         return Response(serializer.data)
 
+class AuthorList(APIView):
+    def get(self, request, format=None):
+        authors = Author.objects.all()
+        serializer = AuthorsSerializer(authors, many=True)
+        return Response(serializer.data)
+
+class AuthorDetail(APIView):
+    def get_object(self, author_slug):
+        try:
+            return Author.objects.get(slug=author_slug)
+        except Author.DoesNotExist:
+            raise Http404
+    
+    def get(self, request, author_slug, format=None):
+        author = self.get_object(author_slug)
+        serializer = AuthorSerializer(author)
+        return Response(serializer.data)
+
+class PublisherList(APIView):
+    def get(self, request, format=None):
+        publishers = Publisher.objects.all()
+        serializer = PublishersSerializer(publishers, many=True)
+        return Response(serializer.data)
+
+class PublisherDetail(APIView):
+    def get_object(self, publisher_slug):
+        try:
+            return Publisher.objects.get(slug=publisher_slug)
+        except Publisher.DoesNotExist:
+            raise Http404
+    
+    def get(self, request, publisher_slug, format=None):
+        publisher = self.get_object(publisher_slug)
+        serializer = PublisherSerializer(publisher)
+        return Response(serializer.data)
+
 class BookDetail(APIView):
     def get_object(self, category_slug, book_slug):
         try:

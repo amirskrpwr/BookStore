@@ -14,6 +14,20 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <router-link to="/authors" class="nav-link active">
+              Authors
+            </router-link>
+          </li>
+        </ul>
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <router-link to="/publishers" class="nav-link active">
+              Publishers
+            </router-link>
+          </li>
+        </ul>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">

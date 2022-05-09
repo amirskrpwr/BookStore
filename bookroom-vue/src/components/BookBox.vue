@@ -3,7 +3,7 @@
     <div class="box-element">
       <img class="thumbnail" :src="book.get_image" :alt="book.image" />
       <h4 class="p-2">{{ book.name }}</h4>
-      <h5>${{ book.price }}</h5>
+      <h5>${{ numberByCommas(parseInt(book.price)) }}</h5>
       <button
         class="btn btn-outline-secondary update-cart"
         @click="addToCart(book)"
@@ -37,6 +37,10 @@ export default {
       };
 
       this.$store.commit("addToCart", item);
+    },
+
+    numberByCommas(number) {
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
   },
 };
