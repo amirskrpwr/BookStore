@@ -9,51 +9,96 @@
       <div v-else><button class="btn btn-warning">Add Email</button></div>
       <br />
       <div>
-        <button @click="logout()" class="btn btn-danger">Log out</button>
+        <button
+          class="btn btn-danger"
+          data-bs-toggle="modal"
+          data-bs-target="#demo"
+        >
+          Log out
+        </button>
       </div>
     </div>
-    <hr />
-    <h2>Orders</h2>
-    <br />
-    <div v-for="order in orders" :key="order.id">
-      <div class="box-element">
-        <div class="cart-row">
-          <div style="flex: 1.5"></div>
-          <div style="flex: 1.5"><strong>Item</strong></div>
-          <div style="flex: 1"><strong>Price</strong></div>
-          <div style="flex: 1"><strong>Quantity</strong></div>
-          <div style="flex: 1"><strong>Total</strong></div>
+    <div v-show="orders.length">
+      <hr />
+      <h2>Orders</h2>
+      <br />
+      <div v-for="order in orders" :key="order.id">
+        <div class="box-element">
+          <div class="cart-row">
+            <div style="flex: 1.5"></div>
+            <div style="flex: 1.5"><strong>Item</strong></div>
+            <div style="flex: 1"><strong>Price</strong></div>
+            <div style="flex: 1"><strong>Quantity</strong></div>
+            <div style="flex: 1"><strong>Total</strong></div>
+          </div>
+          <span></span>
+          <div v-for="item in order.orderItems" :key="item.id" class="cart-row">
+            <div style="flex: 1.5">
+              <router-link :to="item.book.get_absolute_url">
+                <img
+                  :src="item.book.get_image"
+                  :alt="item.book.name"
+                  class="row-image"
+                />
+              </router-link>
+            </div>
+            <div style="flex: 1.5">
+              <p>{{ item.book.name }}</p>
+            </div>
+            <div style="flex: 1">
+              <p>${{ numberByCommas(parseInt(item.book.price)) }}</p>
+            </div>
+            <div style="flex: 1">
+              <p>x{{ item.quantity }}</p>
+            </div>
+            <div style="flex: 1">
+              <p>${{ numberByCommas(item.book.price * item.quantity) }}</p>
+            </div>
+          </div>
         </div>
-        <span></span>
-        <div v-for="item in order.orderItems" :key="item.id" class="cart-row">
-          <div style="flex: 1.5">
-            <router-link :to="item.book.get_absolute_url">
-              <img
-                :src="item.book.get_image"
-                :alt="item.book.name"
-                class="row-image"
-              />
-            </router-link>
+        <br />
+      </div>
+    </div>
+
+    <!-- modal -->
+    <div
+      class="modal fade"
+      id="demo"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
           </div>
-          <div style="flex: 1.5">
-            <p>{{ item.book.name }}</p>
-          </div>
-          <div style="flex: 1">
-            <p>${{ parseInt(item.book.price).toFixed(2) }}</p>
-          </div>
-          <div style="flex: 1">
-            <p>x{{ item.quantity }}</p>
-          </div>
-          <div style="flex: 1">
-            <p>
-              ${{
-                numberByCommas((item.book.price * item.quantity).toFixed(2))
-              }}
-            </p>
+          <div class="modal-body">Do you want to log out?</div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              No
+            </button>
+            <button
+              type="button"
+              @click="logout()"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+            >
+              Yes
+            </button>
           </div>
         </div>
       </div>
-      <br />
     </div>
   </div>
 </template>

@@ -1,20 +1,22 @@
 <template>
   <div class="col-lg-3 col-md-6 mb-3">
     <div class="box-element">
-      <img class="thumbnail" :src="book.get_image" :alt="book.image" />
-      <h4 class="p-2">{{ book.name }}</h4>
-      <h5>${{ numberByCommas(parseInt(book.price)) }}</h5>
+      <router-link
+        class="text-decoration-none"
+        v-bind:to="book.get_absolute_url"
+      >
+        <img class="thumbnail" :src="book.get_image" :alt="book.image" />
+        <h4 class="p-2 text-black-50">{{ book.name }}</h4>
+        <h5 class="p-2 text-black-50">
+          {{ numberByCommas(parseInt(book.price)) }} تومان
+        </h5>
+      </router-link>
       <button
         class="btn btn-outline-secondary update-cart"
         @click="addToCart(book)"
       >
-        Add to cart
+        افزودن به سبد خرید
       </button>
-      <router-link
-        v-bind:to="book.get_absolute_url"
-        class="btn btn-outline-secondary update-cart ms-2"
-        >View Details</router-link
-      >
     </div>
   </div>
 </template>
