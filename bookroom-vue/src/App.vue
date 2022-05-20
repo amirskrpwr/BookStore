@@ -2,7 +2,9 @@
   <div>
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
       <div class="container">
-        <router-link to="/" class="navbar-brand">BookRoom</router-link>
+        <router-link to="/" class="navbar-brand logo ms-2">
+          <i class="fas fa-book"></i> کتابخانه
+        </router-link>
         <button
           class="navbar-toggler"
           type="button"
@@ -14,17 +16,17 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <ul class="navbar-nav me-auto me-2 mb-lg-0">
           <li class="nav-item">
             <router-link to="/authors" class="nav-link active">
-              Authors
+              نویسندگان
             </router-link>
           </li>
         </ul>
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
             <router-link to="/publishers" class="nav-link active">
-              Publishers
+              انتشارات
             </router-link>
           </li>
         </ul>
@@ -40,7 +42,7 @@
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                   >
-                    Categories
+                    دسته‌بندی‌ها
                   </button>
                   <ul
                     class="dropdown-menu"
@@ -48,7 +50,7 @@
                   >
                     <li>
                       <router-link to="/" class="dropdown-item">
-                        Store
+                        کتابخانه
                       </router-link>
                     </li>
                     <li><hr class="dropdown-divider" /></li>
@@ -66,16 +68,16 @@
                 </div>
               </li>
             </ul>
-            <form class="d-flex ms-3" method="get" action="/search">
+            <form class="d-flex me-3" method="get" action="/search">
               <input
-                class="form-control me-2"
+                class="form-control ms-2"
                 type="search"
-                placeholder="Search"
+                placeholder="جستجو"
                 aria-label="Search"
                 name="query"
               />
               <button class="btn btn-outline-success" type="submit">
-                Search
+                جستجو
               </button>
             </form>
           </div>
@@ -83,15 +85,12 @@
           <div class="form-inline my-2 ms-2 my-lg-0">
             <div v-if="$store.state.isAuthenticated">
               <router-link class="btn btn-primary" to="/my-account">
-                My Account
+                <strong>{{ $store.state.username }}</strong>
               </router-link>
-              <span class="ms-4 me-3"
-                ><strong>{{ $store.state.username }}</strong></span
-              >
             </div>
             <div v-else>
               <router-link class="btn btn-warning" to="/log-in">
-                Login
+                ورود
               </router-link>
             </div>
           </div>
@@ -107,12 +106,10 @@
     </nav>
 
     <div
-      class="d-flex justify-content-center margin-loading"
       v-bind:class="{ hidden: !$store.state.isLoading }"
+      class="loader-container"
     >
-      <div class="spinner-border text-primary spinner-size" role="status">
-        <span class="sr-only"></span>
-      </div>
+      <img src="@/assets/images/loader-img.gif" alt="loader image" />
     </div>
 
     <section class="container p-5 margin-top">
@@ -179,11 +176,66 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+@font-face {
+  font-family: "Vazir";
+  src: url(@/assets/fonts/Vazir-Regular.ttf);
+}
+:root {
+  --green: #27ae60;
+  --dark-color: #219150;
+  --black: #444;
+  --light-color: #666;
+  --border: 0.1rem solid rgba(0, 0, 0, 0.1);
+  --border-hover: 0.1rem solid var(--black);
+  --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+* {
+  font-family: "Vazir";
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  text-decoration: none;
+  text-transform: capitalize;
+  transition: all 0.2s linear;
+  transition: width none;
+}
+
+html {
+  overflow-x: hidden;
+  scroll-padding-top: 5rem;
+  scroll-behavior: smooth;
+}
+
+html::-webkit-scrollbar {
+  width: 1rem;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: var(--black);
+}
+
 #cart-icon {
   width: 30px;
   display: inline-block;
   margin-left: 15px;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: bolder;
+  color: var(--black);
+}
+
+.logo i {
+  color: var(--green);
 }
 
 .hidden {
@@ -196,7 +248,21 @@ export default {
 .margin-top {
   margin-top: 40px;
 }
-.margin-loading {
-  margin-top: 120px;
+
+.loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10000;
+  background: #f7f7f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-container img {
+  height: 10rem;
 }
 </style>

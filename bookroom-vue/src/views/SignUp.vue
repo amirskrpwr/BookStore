@@ -1,46 +1,39 @@
 <template>
   <div>
-    <div class="d-flex justify-content-center"><h1>Sign Up</h1></div>
-    <br />
-    <div class="d-flex justify-content-center">
-      <form @submit.prevent="submitForm" class="width">
-        <div class="form-field">
-          <input
-            type="text"
-            name="username"
-            id=""
-            placeholder="Username"
-            v-model="username"
-            class="form-control"
-          />
-          <br />
-          <input
-            type="password"
-            name="password"
-            id=""
-            placeholder="Password"
-            v-model="password"
-            class="form-control"
-          />
-          <br />
-          <input
-            type="password"
-            name="password2"
-            id=""
-            placeholder="Password again"
-            v-model="password2"
-            class="form-control"
-          />
-          <br />
-          <div class="" v-if="errors.length">
-            <p v-for="error in errors" :key="error.id">{{ error }}</p>
-          </div>
-          <div class="d-grid gap-2">
-            <button class="btn btn-primary">Sign Up</button>
-          </div>
+    <div class="login-form-container">
+      <form action="" @submit.prevent="submitForm">
+        <h3>ثبت نام</h3>
+        <span>نام کاربری</span>
+        <input
+          type="text"
+          name="username"
+          id="username"
+          v-model="username"
+          class="form-control box"
+          placeholder="نام کاربری خود را وارد کنید"
+        />
+        <span>رمز عبور</span>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          v-model="password"
+          class="form-control box"
+          placeholder="رمز عبور خود را وارد کنید"
+        />
+        <input
+          type="password"
+          name="password2"
+          id="password"
+          v-model="password2"
+          class="form-control box"
+          placeholder="رمز عبور خود را مجدداً وارد کنید"
+        />
+        <input type="submit" value="ساخت حساب" class="btn" />
+        <p>حساب دارید؟ <router-link to="/log-in">ورود به حساب</router-link></p>
+        <div class="p-3 mb-2 bg-danger text-white" v-if="errors.length">
+          <p v-for="error in errors" :key="error.id">{{ error }}</p>
         </div>
-        <hr />
-        Or <router-link to="/log-in">click here</router-link> to Log in!
       </form>
     </div>
   </div>
@@ -64,13 +57,16 @@ export default {
       this.errors = [];
 
       if (this.username === "") {
-        this.errors.push("The username is missing");
+        this.errors.push("نام کاربری وارد نشده است");
       }
       if (this.password === "") {
-        this.errors.push("The password is too short");
+        this.errors.push("رمزعبور وارد نشده‌است");
+      }
+      if (this.password.length < 8) {
+        this.errors.push("رمزعبور باید حداقل شامل 8 کاراکتر باشد");
       }
       if (this.password !== this.password2) {
-        this.errors.push("The passwords are not matched");
+        this.errors.push("رمزهای عبور با هم تطابق ندارند");
       }
 
       if (!this.errors.length) {
@@ -87,13 +83,13 @@ export default {
           })
           .catch((err) => {
             if (err.response) {
-              for (const property in error.response.data) {
+              for (const property in err.response.data) {
                 this.errors.push(`${property}:${err.response.data[property]}`);
               }
 
               console.log(JSON.stringify(error.response.data));
             } else if (err.message) {
-              this.errors.push("Something went wrong. Please try again.");
+              this.errors.push("مشکلی رخ داده‌است. لطفا دوباره امتحان کنید.");
 
               console.log(JSON.stringify(err));
             }
@@ -107,5 +103,105 @@ export default {
 <style scoped>
 .width {
   width: 420px;
+}
+
+.box {
+  margin: 2rem 0;
+  position: relative;
+  overflow: hidden;
+  border: var(--border);
+  text-align: center;
+}
+
+.box:hover {
+  border: var(--border-hover);
+}
+
+.btn {
+  margin-top: 1rem;
+  display: inline-block;
+  padding: 0.9rem 3rem;
+  border-radius: 0.5rem;
+  color: #fff;
+  background: var(--green);
+  font-size: 1.3rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn:hover {
+  background: var(--dark-color);
+}
+
+.login-form-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.login-form-container form {
+  background: #fff;
+  border: var(--border);
+  width: 35rem;
+  padding: 1.6rem;
+  box-shadow: var(--box-shadow);
+  border-radius: 0.5rem;
+  margin: 1.7rem;
+}
+
+.login-form-container form h3 {
+  font-size: 2rem;
+  text-transform: uppercase;
+  color: var(--black);
+  text-align: center;
+}
+
+.login-form-container form span {
+  display: block;
+  font-size: 1.2rem;
+  padding-top: 0.8rem;
+}
+
+.login-form-container form .box {
+  width: 100%;
+  margin: 0.7rem 0;
+  font-size: 1rem;
+  border: var(--border);
+  border-radius: 0.5rem;
+  padding: 0.8rem 1rem;
+  color: var(--black);
+  text-transform: none;
+}
+
+.login-form-container form .checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 0;
+}
+
+.login-form-container form .checkbox label {
+  font-size: 1rem;
+  color: var(--light-color);
+  cursor: pointer;
+}
+
+.login-form-container form .btn {
+  text-align: center;
+  width: 100%;
+  margin: 1.2rem 0;
+}
+
+.login-form-container form p {
+  padding-top: 0.8rem;
+  color: var(--light-color);
+  font-size: 1rem;
+}
+
+.login-form-container form p a {
+  color: var(--green);
+  text-decoration: underline;
 }
 </style>

@@ -28,7 +28,7 @@
                 alt="default"
               />
             </div>
-            <h6 class="mt-3 p-2 d-flex justify-content-end">
+            <h6 class="mt-3 p-2">
               {{ author.name }}
             </h6>
           </router-link>
