@@ -1,24 +1,32 @@
 <template>
   <div>
     <h3>{{ book.name }}</h3>
-    <div>{{ book.description }}</div>
-    <img :src="book.get_image" :alt="book.name" />
-    <br />
-    <div v-if="author">
-      <span>نویسنده: </span>
-      <router-link :to="author_slug">{{ author }}</router-link>
-      <br /><br />
-    </div>
+    <br /><br />
+    <div class="row">
+      <div class="col-lg-3 col-md-6 mb-3">
+        <img :src="book.get_image" :alt="book.name" /><br /><br />
+        <div v-if="author">
+          <span>نویسنده: </span>
+          <router-link :to="author_slug">{{ author }}</router-link>
+          <br /><br />
+        </div>
 
-    <div v-if="translator">
-      <span>مترجم: </span>
-      <router-link :to="translator_slug">{{ translator }}</router-link>
-      <br /><br />
-    </div>
+        <div v-if="translator">
+          <span>مترجم: </span>
+          <router-link :to="translator_slug">{{ translator }}</router-link>
+          <br /><br />
+        </div>
 
-    <div v-if="publisher">
-      <span>ناشر: </span>
-      <router-link :to="publisher_slug">{{ publisher }}</router-link>
+        <div v-if="publisher">
+          <span>ناشر: </span>
+          <router-link :to="publisher_slug">{{ publisher }}</router-link>
+        </div>
+        <br />
+        <div>سال نشر: {{ book.publish_year }}</div>
+        <br />
+        <div>تعداد صفحات: {{ book.page_count }}</div>
+      </div>
+      <div class="col-lg-9 col-md-6 mb-3">{{ book.description }}</div>
     </div>
   </div>
 </template>

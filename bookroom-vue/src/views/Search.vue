@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Search term: "{{ query }}"</h2>
+    <h2>نتایج بدست آمده برای عبارتِ "{{ query }}"</h2>
     <div class="row">
       <BookBox v-for="book in books" :key="book.id" v-bind:book="book" />
     </div>
