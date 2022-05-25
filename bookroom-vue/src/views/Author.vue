@@ -2,30 +2,51 @@
   <div>
     <h2>{{ author.name }}</h2>
     <br />
-    <img
-      v-if="author.get_image"
-      :src="author.get_image"
-      class="img-thumbnail"
-      width="200"
-      height="150"
-      :alt="author.name"
-    />
-    <img
-      v-else
-      src="../assets/images/default.png"
-      class="img-thumbnail"
-      width="200"
-      height="150"
-      :alt="author.name"
-    />
+    <div class="row">
+      <div class="col-lg-3 col-md-6 mb-3">
+        <img
+          v-if="author.get_image"
+          :src="author.get_image"
+          class="img-thumbnail"
+          width="200"
+          height="150"
+          :alt="author.name"
+        />
+        <img
+          v-else
+          src="../assets/images/default.png"
+          class="img-thumbnail"
+          width="200"
+          height="150"
+          :alt="author.name"
+        />
+        <div v-if="author.birth_date">
+          <br />
+          <div>تاریخ تولد: {{ author.birth_date }}</div>
+        </div>
+        <div v-if="author.birth_place">
+          <br />
+          <div>محل تولد: {{ author.birth_place }}</div>
+        </div>
+      </div>
+      <div class="col-lg-9 col-md-6 mb-3">
+        <div v-if="author.introduction">
+          <p>{{ author.introduction }}</p>
+          <br /><br />
+        </div>
+      </div>
+    </div>
     <br />
     <br />
+
     <div v-show="books.length" class="row">
-      <h2>Books</h2>
+      <h2>کتاب‌ها</h2>
+      <hr />
       <BookBox v-for="book in books" :key="book.id" v-bind:book="book" />
     </div>
     <div v-show="translations.length" class="row">
-      <h2>Translations</h2>
+      <h2>ترجمه‌ها</h2>
+      <hr />
       <BookBox v-for="book in translations" :key="book.id" v-bind:book="book" />
     </div>
   </div>

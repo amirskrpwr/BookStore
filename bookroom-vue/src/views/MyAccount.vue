@@ -3,10 +3,11 @@
     <div>
       <h1>{{ username }}</h1>
       <div v-if="email">
-        <h3>{{ email }}</h3>
-        <button class="btn btn-primary">Change Email</button>
+        <h3>
+          {{ email }} <button class="btn btn-primary">تغییر ایمیل</button>
+        </h3>
       </div>
-      <div v-else><button class="btn btn-warning">Add Email</button></div>
+      <div v-else><button class="btn btn-warning">افزودن ایمیل</button></div>
       <br />
       <div>
         <button
@@ -14,26 +15,26 @@
           data-bs-toggle="modal"
           data-bs-target="#demo"
         >
-          Log out
+          خروج از حساب
         </button>
       </div>
     </div>
     <div v-show="orders.length">
       <hr />
-      <h2>Orders</h2>
+      <h2>سفارشات:</h2>
       <br />
       <div v-for="order in orders" :key="order.id">
         <div class="box-element">
           <div class="cart-row">
             <div style="flex: 1.5"></div>
-            <div style="flex: 1.5"><strong>Item</strong></div>
-            <div style="flex: 1"><strong>Price</strong></div>
-            <div style="flex: 1"><strong>Quantity</strong></div>
-            <div style="flex: 1"><strong>Total</strong></div>
+            <div style="flex: 2"><strong>عنوان</strong></div>
+            <div style="flex: 1.2"><strong>قیمت</strong></div>
+            <div style="flex: 0.5"><strong>تعداد</strong></div>
+            <div style="flex: 0.9"><strong>جمع کل</strong></div>
           </div>
           <span></span>
           <div v-for="item in order.orderItems" :key="item.id" class="cart-row">
-            <div style="flex: 1.5">
+            <div style="flex: 1.5" class="align-self-center">
               <router-link :to="item.book.get_absolute_url">
                 <img
                   :src="item.book.get_image"
@@ -42,17 +43,41 @@
                 />
               </router-link>
             </div>
-            <div style="flex: 1.5">
+            <div style="flex: 2" class="align-self-center">
               <p>{{ item.book.name }}</p>
             </div>
-            <div style="flex: 1">
-              <p>${{ numberByCommas(parseInt(item.book.price)) }}</p>
+            <div style="flex: 1.2" class="align-self-center">
+              <p v-if="item.book.discount != 0">
+                <span class="me-2">
+                  {{
+                    numberByCommas(
+                      parseInt(item.book.price * (1 - item.book.discount / 100))
+                    )
+                  }}
+                </span>
+                <span class="text-decoration-line-through text-danger">{{
+                  numberByCommas(parseInt(item.book.price))
+                }}</span>
+                تومان
+              </p>
+              <p v-else>
+                {{ numberByCommas(parseInt(item.book.price)) }} تومان
+              </p>
             </div>
-            <div style="flex: 1">
-              <p>x{{ item.quantity }}</p>
+            <div style="flex: 0.5" class="align-self-center">
+              <p>{{ item.quantity }}</p>
             </div>
-            <div style="flex: 1">
-              <p>${{ numberByCommas(item.book.price * item.quantity) }}</p>
+            <div style="flex: 0.9" class="align-self-center">
+              <p>
+                {{
+                  numberByCommas(
+                    item.book.price *
+                      item.quantity *
+                      (1 - item.book.discount / 100)
+                  )
+                }}
+                تومان
+              </p>
             </div>
           </div>
         </div>
@@ -71,22 +96,26 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+            <h5 class="modal-title" id="exampleModalLabel">خروج از حساب</h5>
+            <div class="d-flex flex-row-reverse">
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
           </div>
-          <div class="modal-body">Do you want to log out?</div>
+          <div class="modal-body">
+            آیا می‌خواهید از حساب کاربریتان خارج شوید؟
+          </div>
           <div class="modal-footer">
             <button
               type="button"
               class="btn btn-secondary"
               data-bs-dismiss="modal"
             >
-              No
+              خیر
             </button>
             <button
               type="button"
@@ -94,7 +123,7 @@
               class="btn btn-primary"
               data-bs-dismiss="modal"
             >
-              Yes
+              بله
             </button>
           </div>
         </div>

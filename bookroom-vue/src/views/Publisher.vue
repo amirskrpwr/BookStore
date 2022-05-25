@@ -21,7 +21,8 @@
     <br />
     <br />
     <div class="row">
-      <h2>Books</h2>
+      <h2>کتاب‌ها</h2>
+      <hr />
       <BookBox
         v-for="book in publisher.books"
         :key="book.id"

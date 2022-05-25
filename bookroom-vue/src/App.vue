@@ -26,7 +26,7 @@
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
             <router-link to="/publishers" class="nav-link active">
-              انتشارات
+              ناشران
             </router-link>
           </li>
         </ul>
@@ -95,9 +95,11 @@
             </div>
           </div>
 
-          <router-link to="/cart"
+          <router-link to="/cart" class="position-relative me-3"
             ><img src="@/assets/images/cart.png" alt="cart" id="cart-icon" />
-            <span class="translate-middle badge rounded-pill bg-warning">
+            <span
+              class="translate-middle position-absolute top-0 start-100 badge rounded-pill bg-warning"
+            >
               {{ cartTotalLength }}
             </span>
           </router-link>

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h2 v-if="!$store.state.isLoading">Authors</h2>
+    <h2 v-if="!$store.state.isLoading">نویسندگان</h2>
+    <hr />
     <br />
     <div class="row">
       <div
