@@ -6,10 +6,21 @@
         v-bind:to="book.get_absolute_url"
       >
         <img class="thumbnail" :src="book.get_image" :alt="book.image" />
-        <h4 class="p-2 text-black-50">{{ book.name }}</h4>
-        <h5 class="p-2 text-black-50">
+        <h5 class="p-2 text-black-50 short">{{ book.name }}</h5>
+        <h6 v-if="book.discount != 0" class="p-2 text-black-50">
+          <span class="me-3">
+            {{
+              numberByCommas(parseInt(book.price * (1 - book.discount / 100)))
+            }}
+          </span>
+          <span class="text-decoration-line-through text-danger">{{
+            numberByCommas(parseInt(book.price))
+          }}</span>
+          تومان
+        </h6>
+        <h6 v-else class="p-2 text-black-50">
           {{ numberByCommas(parseInt(book.price)) }} تومان
-        </h5>
+        </h6>
       </router-link>
       <button
         class="btn btn-outline-secondary update-cart"
@@ -59,5 +70,12 @@ export default {
   background-color: #fff;
   border-radius: 4px;
   padding: 10px;
+}
+
+.short {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

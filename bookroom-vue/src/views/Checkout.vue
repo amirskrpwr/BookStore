@@ -4,22 +4,23 @@
       <div class="box-element" id="form-wrapper">
         <form @submit.prevent="submitForm" class="p-2" action="" id="form">
           <div id="shipping-info">
-            <h3>Shipping Infromation:</h3>
+            <h3>اطلاعات ارسال:</h3>
             <hr />
+
             <div class="form-field">
               <input
                 type="text"
-                placeholder="Address.."
-                name="address"
-                id="address"
-                v-model="address"
+                placeholder="استان.."
+                name="state"
+                id="state"
+                v-model="state"
                 class="form-control"
               />
             </div>
             <div class="form-field">
               <input
                 type="text"
-                placeholder="City.."
+                placeholder="شهر.."
                 name="city"
                 id="city"
                 v-model="city"
@@ -29,10 +30,10 @@
             <div class="form-field">
               <input
                 type="text"
-                placeholder="State.."
-                name="state"
-                id="state"
-                v-model="state"
+                placeholder="نشانی.."
+                name="address"
+                id="address"
+                v-model="address"
                 class="form-control"
               />
             </div>
@@ -51,20 +52,22 @@
         </div>
       </div>
       <br />
-      <div class="box-element hidden" id="payment-info">
-        <small>PayPal Options</small>
-        <button id="make-payment">Make Payment</button>
-      </div>
     </div>
     <div class="col-lg-6">
       <div class="box-element">
         <div class="p-2">
           <router-link to="/cart" class="btn btn-outline-dark">
-            Back to cart
+            بازگشت به سبد خرید
           </router-link>
           <hr />
-          <h3>Order Summary</h3>
+          <h3>خلاصه سفارش</h3>
           <hr />
+          <div class="cart-row">
+            <div style="flex: 2"></div>
+            <div style="flex: 2"><strong>عنوان</strong></div>
+            <div style="flex: 1.75"><strong>قیمت</strong></div>
+            <div style="flex: 0.5"><strong>تعداد</strong></div>
+          </div>
           <div v-for="item in cart.items" :key="item.id" class="cart-row">
             <div style="flex: 2">
               <router-link :to="item.book.get_absolute_url">
@@ -75,18 +78,44 @@
                 />
               </router-link>
             </div>
-            <div style="flex: 2">
+            <div style="flex: 2" class="align-self-center">
               <p>{{ item.book.name }}</p>
             </div>
-            <div style="flex: 1">
-              <p>${{ numberByCommas(item.book.price * item.quantity) }}</p>
+            <div style="flex: 1.75" class="align-self-center">
+              <p>{{ numberByCommas(parseInt(item.book.price)) }} تومان</p>
             </div>
-            <div style="flex: 1">
-              <p>x{{ item.quantity }}</p>
+            <div style="flex: 0.5" class="align-self-center">
+              <p>{{ item.quantity }}</p>
             </div>
           </div>
-          <h5>Items: {{ numberByCommas(getTotalCount) }}</h5>
-          <h5>Total: ${{ numberByCommas(getTotalAmount) }}</h5>
+          <div class="row">
+            <h6 style="flex: 1">
+              <strong>تعداد کتاب ها: </strong>
+            </h6>
+            <h6 style="flex: 2">{{ numberByCommas(getTotalCount) }} کتاب</h6>
+          </div>
+          <div class="row" v-if="getTotalDiscount">
+            <h6 style="flex: 1">
+              <strong>مجموع: </strong>
+            </h6>
+            <h6 style="flex: 2">{{ numberByCommas(getTotalAmount) }} تومان</h6>
+          </div>
+          <div class="row" v-if="getTotalDiscount">
+            <h6 style="flex: 1">
+              <strong>مجموع تخفیف: </strong>
+            </h6>
+            <h6 style="flex: 2" class="text-success">
+              {{ numberByCommas(getTotalDiscount) }} تومان
+            </h6>
+          </div>
+          <div class="row">
+            <h6 style="flex: 1">
+              <strong>مجموع قابل پرداخت: </strong>
+            </h6>
+            <h6 style="flex: 2">
+              {{ numberByCommas(getTotalAmount - getTotalDiscount) }} تومان
+            </h6>
+          </div>
         </div>
       </div>
     </div>
@@ -123,6 +152,16 @@ export default {
       let total = 0;
       for (let i = 0; i < this.cart.items.length; i++) {
         total += this.cart.items[i].quantity;
+      }
+      return total;
+    },
+    getTotalDiscount() {
+      let total = 0;
+      for (let i = 0; i < this.cart.items.length; i++) {
+        total +=
+          ((this.cart.items[i].quantity * this.cart.items[i].book.discount) /
+            100) *
+          this.cart.items[i].book.price;
       }
       return total;
     },

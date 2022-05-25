@@ -3,29 +3,29 @@
     <div class="col-lg-12">
       <div class="box-element">
         <router-link to="/" class="btn btn-outline-dark">
-          &#x2190; Continue Shopping
+          &#x2190; بازگشت به خرید
         </router-link>
         <br /><br />
         <table class="table">
           <th>
-            <h5>
-              Items: <strong>{{ numberByCommas(getTotalCount) }}</strong>
-            </h5>
+            <h6>
+              تعداد کتاب: <strong>{{ numberByCommas(getTotalCount) }}</strong>
+            </h6>
           </th>
           <th>
-            <h5>
-              Total:
-              <strong>$ {{ numberByCommas(getTotalAmount) }}</strong>
-            </h5>
+            <h6>
+              جمع کل:
+              <strong>{{ numberByCommas(getTotalAmount) }} تومان</strong>
+            </h6>
           </th>
-          <th>
+          <th class="d-flex flex-row-reverse">
             <router-link
               to="/cart/checkout"
               class="btn btn-success"
               v-if="getTotalCount"
               id="btn-checkout"
             >
-              Checkout
+              پرداخت
             </router-link>
           </th>
         </table>
@@ -33,16 +33,17 @@
       <br />
       <div class="box-element">
         <div class="cart-row">
-          <div style="flex: 1.5"></div>
-          <div style="flex: 1.5"><strong>Item</strong></div>
-          <div style="flex: 1"><strong>Price</strong></div>
-          <div style="flex: 1"><strong>Quantity</strong></div>
-          <div style="flex: 1"><strong>Total</strong></div>
-          <div style="flex: 0.6"></div>
+          <div style="flex: 1.1"></div>
+          <div style="flex: 1.5"><strong>عنوان</strong></div>
+          <div style="flex: 1"><strong>قیمت</strong></div>
+          <div style="flex: 0.8"><strong>تعداد</strong></div>
+          <div v-if="getTotalDiscount" style="flex: 0.7"></div>
+          <div style="flex: 1"><strong>جمع کل</strong></div>
+          <div style="flex: 0.3"></div>
         </div>
         <span></span>
         <div v-for="item in cart.items" :key="item.id" class="cart-row">
-          <div style="flex: 1.5">
+          <div style="flex: 1.1">
             <router-link :to="item.book.get_absolute_url">
               <img
                 :src="item.book.get_image"
@@ -51,11 +52,13 @@
               />
             </router-link>
           </div>
-          <div style="flex: 1.5">{{ item.book.name }}</div>
-          <div style="flex: 1">
-            ${{ numberByCommas(parseInt(item.book.price)) }}
+          <div style="flex: 1.5" class="align-self-center">
+            {{ item.book.name }}
           </div>
-          <div style="flex: 1">
+          <div style="flex: 1" class="align-self-center">
+            {{ numberByCommas(parseInt(item.book.price)) }} تومان
+          </div>
+          <div style="flex: 0.8" class="align-self-center">
             <p class="quantity">{{ item.quantity }}</p>
             <div class="quantity">
               <img
@@ -82,10 +85,30 @@
               />
             </div>
           </div>
-          <div style="flex: 1">
-            $ {{ numberByCommas(item.quantity * item.book.price) }}
+          <div
+            v-if="getTotalDiscount"
+            style="flex: 0.7"
+            class="align-self-center"
+          >
+            <small v-if="item.book.discount != 0" class="text-success">
+              {{
+                numberByCommas(
+                  parseInt(
+                    (item.book.price * item.book.discount * item.quantity) / 100
+                  )
+                )
+              }}- تومان
+            </small>
           </div>
-          <div style="flex: 0.6">
+          <div style="flex: 1" class="align-self-center">
+            {{
+              numberByCommas(
+                item.quantity * item.book.price * (1 - item.book.discount / 100)
+              )
+            }}
+            تومان
+          </div>
+          <div style="flex: 0.3" class="align-self-center">
             <img
               src="../assets/images/trash.png"
               id="trash-icon"
@@ -111,22 +134,26 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+            <h5 class="modal-title" id="exampleModalLabel">حذف از سبد خرید</h5>
+            <div class="d-flex flex-row-reverse">
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
           </div>
-          <div class="modal-body">Are you sure?</div>
+          <div class="modal-body">
+            آیا از حذف این کتاب از سبد خرید خود اطمینان دارید؟
+          </div>
           <div class="modal-footer">
             <button
               type="button"
               class="btn btn-secondary"
               data-bs-dismiss="modal"
             >
-              No
+              خیر
             </button>
             <button
               type="button"
@@ -134,7 +161,7 @@
               class="btn btn-primary"
               data-bs-dismiss="modal"
             >
-              Yes
+              بله
             </button>
           </div>
         </div>
@@ -167,7 +194,10 @@ export default {
     getTotalAmount() {
       let total = 0;
       for (let i = 0; i < this.cart.items.length; i++) {
-        total += this.cart.items[i].quantity * this.cart.items[i].book.price;
+        total +=
+          this.cart.items[i].quantity *
+          this.cart.items[i].book.price *
+          (1 - this.cart.items[i].book.discount / 100);
       }
       return total;
     },
@@ -175,6 +205,16 @@ export default {
       let total = 0;
       for (let i = 0; i < this.cart.items.length; i++) {
         total += this.cart.items[i].quantity;
+      }
+      return total;
+    },
+    getTotalDiscount() {
+      let total = 0;
+      for (let i = 0; i < this.cart.items.length; i++) {
+        total +=
+          ((this.cart.items[i].quantity * this.cart.items[i].book.discount) /
+            100) *
+          this.cart.items[i].book.price;
       }
       return total;
     },
