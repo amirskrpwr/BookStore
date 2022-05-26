@@ -4,7 +4,12 @@
     <br /><br />
     <div class="row">
       <div class="col-lg-3 col-md-6 mb-3">
-        <img :src="book.get_image" :alt="book.name" /><br /><br />
+        <img
+          :src="book.get_image"
+          class="img-thumbnail"
+          :alt="book.name"
+          width="230"
+        /><br /><br />
         <div v-if="author">
           <span>نویسنده: </span>
           <router-link :to="author_slug">{{ author }}</router-link>

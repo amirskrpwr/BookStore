@@ -5,82 +5,93 @@
         <router-link to="/" class="navbar-brand logo ms-2">
           <i class="fas fa-book"></i> کتابخانه
         </router-link>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <ul class="navbar-nav me-auto me-2 mb-lg-0">
-          <li class="nav-item">
-            <router-link to="/authors" class="nav-link active">
-              نویسندگان
-            </router-link>
-          </li>
-        </ul>
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <router-link to="/publishers" class="nav-link active">
-              ناشران
-            </router-link>
-          </li>
-        </ul>
+        <div class="d-flex flex-row-reverse">
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-              <li class="nav-item ms-2">
-                <div class="dropdown">
-                  <button
-                    class="btn dropdown-toggle"
-                    type="button"
-                    id="dropdownMenuButton1"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    دسته‌بندی‌ها
-                  </button>
-                  <ul
-                    class="dropdown-menu"
-                    aria-labelledby="dropdownMenuButton1"
-                  >
-                    <li>
-                      <router-link to="/" class="dropdown-item">
-                        کتابخانه
-                      </router-link>
-                    </li>
-                    <li><hr class="dropdown-divider" /></li>
-                    <li
-                      v-for="category in categoryList"
-                      v-bind:key="category.id"
+          <ul class="navbar-nav me-auto me-2 mb-lg-0">
+            <li class="nav-item">
+              <router-link to="/authors" class="nav-link active">
+                نویسندگان
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/publishers" class="nav-link active">
+                ناشران
+              </router-link>
+            </li>
+          </ul>
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <router-link to="/publishers" class="nav-link active">
+                ناشران
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <ul class="navbar-nav">
+                <li class="nav-item ms-2">
+                  <div class="dropdown">
+                    <button
+                      class="btn dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton1"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
                     >
-                      <router-link
-                        :to="category.get_absolute_url"
-                        class="dropdown-item"
-                        >{{ category.name }}</router-link
+                      دسته‌بندی‌ها
+                    </button>
+                    <ul
+                      class="dropdown-menu"
+                      aria-labelledby="dropdownMenuButton1"
+                    >
+                      <li>
+                        <router-link to="/" class="dropdown-item">
+                          کتابخانه
+                        </router-link>
+                      </li>
+                      <li><hr class="dropdown-divider" /></li>
+                      <li
+                        v-for="category in categoryList"
+                        v-bind:key="category.id"
                       >
-                    </li>
-                  </ul>
-                </div>
-              </li>
-            </ul>
-            <form class="d-flex me-3" method="get" action="/search">
-              <input
-                class="form-control ms-2"
-                type="search"
-                placeholder="جستجو"
-                aria-label="Search"
-                name="query"
-              />
-              <button class="btn btn-outline-success" type="submit">
-                جستجو
-              </button>
-            </form>
-          </div>
+                        <router-link
+                          :to="category.get_absolute_url"
+                          class="dropdown-item"
+                          >{{ category.name }}</router-link
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <form class="d-flex me-3" method="get" action="/search">
+                <input
+                  class="form-control ms-2"
+                  type="search"
+                  placeholder="جستجو"
+                  aria-label="Search"
+                  name="query"
+                />
+                <button class="btn btn-outline-success" type="submit">
+                  جستجو
+                </button>
+              </form>
+            </li>
+          </ul>
+          <div class="collapse navbar-collapse" id="navbarNav"></div>
 
           <div class="form-inline my-2 ms-2 my-lg-0">
             <div v-if="$store.state.isAuthenticated">

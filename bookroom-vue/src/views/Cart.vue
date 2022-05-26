@@ -168,8 +168,14 @@
       </div>
     </div>
   </div>
-  <div v-else>
-    <h2>There is no book in the cart</h2>
+  <div v-else class="d-flex flex-column">
+    <div class="d-flex aligns-items-center justify-content-center empty-cart">
+      <img src="../assets/images/empty-cart.png" alt="empty cart" />
+    </div>
+    <br />
+    <div class="d-flex aligns-items-center justify-content-center">
+      <h5>سبد خرید شما خالی می‌باشد</h5>
+    </div>
   </div>
 </template>
 
@@ -308,5 +314,10 @@ export default {
 
 #trash-icon:hover {
   opacity: 0.6;
+}
+
+.empty-cart img {
+  width: 200px;
+  margin-top: 100px;
 }
 </style>
