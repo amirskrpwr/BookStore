@@ -1,6 +1,7 @@
 <template>
   <div>
     <h2>نتایج بدست آمده برای عبارتِ "{{ query }}"</h2>
+    <br /><br />
     <div class="row">
       <BookBox v-for="book in books" :key="book.id" v-bind:book="book" />
     </div>

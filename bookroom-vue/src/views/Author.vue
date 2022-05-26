@@ -16,8 +16,7 @@
           v-else
           src="../assets/images/default.png"
           class="img-thumbnail"
-          width="200"
-          height="150"
+          width="230"
           :alt="author.name"
         />
         <div v-if="author.birth_date">

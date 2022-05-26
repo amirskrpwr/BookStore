@@ -1,5 +1,13 @@
 <template>
-  <div><h1>Thank You</h1></div>
+  <div class="d-flex flex-column">
+    <div class="d-flex aligns-items-center justify-content-center">
+      <img src="../assets/images/order-completed.png" alt="empty cart" />
+    </div>
+    <br />
+    <div class="d-flex aligns-items-center justify-content-center">
+      <h5>صورت حساب شما با موفقیت پرداخت شد.</h5>
+    </div>
+  </div>
 </template>
 
 <script>

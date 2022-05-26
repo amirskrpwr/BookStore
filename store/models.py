@@ -98,7 +98,7 @@ class Book(models.Model):
     category = models.ForeignKey(Category, related_name='books', on_delete=models.CASCADE)
     slug = models.SlugField()
     description = models.TextField(blank=True, null=True)
-    price = models.DecimalField(max_digits=7, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     discount = models.DecimalField(max_digits=7, decimal_places=2, default=0)
     image = models.ImageField(null=True, blank=True)
     page_count = models.IntegerField(null=True, blank=True)
