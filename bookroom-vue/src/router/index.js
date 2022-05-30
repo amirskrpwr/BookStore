@@ -94,6 +94,18 @@ const routes = [{
         component: () =>
             import ("../views/Publisher.vue"),
     },
+    {
+        path: "/illustrators",
+        name: "IllustratorList",
+        component: () =>
+            import ("../views/IllustratorList.vue"),
+    },
+    {
+        path: "/illustrators/:illustrator_slug/",
+        name: "Illustrator",
+        component: () =>
+            import ("../views/Illustrator.vue"),
+    },
 ];
 
 const router = createRouter({

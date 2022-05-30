@@ -23,10 +23,12 @@ class BooksSerializer(serializers.ModelSerializer):
             "author",
             "language",
             "translator",
+            "illustrator",
             "publisher",
             "slug",
             "description",
             "price",
+            "count",
             "discount",
             "get_image",
             "page_count",
@@ -41,6 +43,8 @@ class BooksSerializer(serializers.ModelSerializer):
             rep['author'] = [instance.author.name, '/authors/'+instance.author.slug]
         if instance.translator:
             rep['translator'] = [instance.translator.name, '/authors/'+instance.translator.slug]
+        if instance.illustrator:
+            rep['illustrator'] = [instance.illustrator.name, '/illustrators/'+instance.illustrator.slug]
         if instance.publisher:
             rep['publisher'] = [instance.publisher.name, '/publishers/'+instance.publisher.slug]
         if instance.category:
@@ -66,7 +70,7 @@ class OrdersSerializer(serializers.ModelSerializer):
         model = Order
         fields = (
             "id",
-            "customer",
+            # "customer",
             "complete",
             "orderItems",
             "state",
@@ -79,7 +83,7 @@ class CustomersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = (
-            # "user",
+            "user",
             'first_name',
             'last_name',
         )
@@ -95,10 +99,12 @@ class BookSerializer(serializers.ModelSerializer):
             "author",
             "language",
             "translator",
+            "illustrator",
             "publisher",
             "slug",
             "description",
             "price",
+            "count",
             "discount",
             "get_image",
             "page_count",
@@ -113,6 +119,8 @@ class BookSerializer(serializers.ModelSerializer):
             rep['author'] = [instance.author.name, '/authors/'+instance.author.slug]
         if instance.translator:
             rep['translator'] = [instance.translator.name, '/authors/'+instance.translator.slug]
+        if instance.illustrator:
+            rep['illustrator'] = [instance.illustrator.name, '/illustrators/'+instance.illustrator.slug]
         rep['publisher'] = [instance.publisher.name, '/publishers/'+instance.publisher.slug]
         rep['category'] = instance.category.name
         return rep
@@ -206,6 +214,33 @@ class AuthorSerializer(serializers.ModelSerializer):
             'introduction',
             'books',
             'translations',
+            'get_absolute_url'
+        )
+class IllustratorsSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model= Illustrator
+        fields = (
+            'id',
+            'name',
+            'birth_date',
+            'birth_place',
+            'get_image',
+            'introduction',
+            'get_absolute_url'
+        )
+
+class IllustratorSerializer(serializers.ModelSerializer):
+    books = BookSerializer(many=True)
+    class Meta: 
+        model= Illustrator
+        fields = (
+            'id',
+            'name',
+            'birth_date',
+            'birth_place',
+            'get_image',
+            'introduction',
+            'books',
             'get_absolute_url'
         )
 

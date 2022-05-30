@@ -4,10 +4,35 @@
       <h1>{{ username }}</h1>
       <div v-if="email">
         <h3>
-          {{ email }} <button class="btn btn-primary">تغییر ایمیل</button>
+          {{ email }}
+          <button class="btn btn-primary" @click="clickFade()">
+            تغییر ایمیل
+          </button>
         </h3>
       </div>
-      <div v-else><button class="btn btn-warning">افزودن ایمیل</button></div>
+      <div v-else>
+        <button class="btn btn-warning" @click="clickFade()">
+          افزودن ایمیل
+        </button>
+      </div>
+      <div id="fadeDiv">
+        <form
+          @submit.prevent="postEmail()"
+          style="width: 60%"
+          class="d-flex mt-3"
+        >
+          <input
+            class="form-control"
+            name="email"
+            type="email"
+            v-model="newEmail"
+            placeholder="ایمیل خود را وارد نمائید.."
+          />
+          <button class="btn btn-outline-success me-2" type="submit">
+            ثبت ایمیل
+          </button>
+        </form>
+      </div>
       <br />
       <div>
         <button
@@ -27,10 +52,10 @@
         <div class="box-element">
           <div class="cart-row">
             <div style="flex: 1.5"></div>
-            <div style="flex: 2"><strong>عنوان</strong></div>
-            <div style="flex: 1.2"><strong>قیمت</strong></div>
-            <div style="flex: 0.5"><strong>تعداد</strong></div>
-            <div style="flex: 0.9"><strong>جمع کل</strong></div>
+            <div style="flex: 2" class="ms-4"><strong>عنوان</strong></div>
+            <div style="flex: 1.2" class="ms-2"><strong>قیمت</strong></div>
+            <div style="flex: 0.5" class="ms-2"><strong>تعداد</strong></div>
+            <div style="flex: 0.9" class="ms-2"><strong>جمع کل</strong></div>
           </div>
           <span></span>
           <div v-for="item in order.orderItems" :key="item.id" class="cart-row">
@@ -43,10 +68,10 @@
                 />
               </router-link>
             </div>
-            <div style="flex: 2" class="align-self-center">
+            <div style="flex: 2" class="align-self-center ms-4">
               <p>{{ item.book.name }}</p>
             </div>
-            <div style="flex: 1.2" class="align-self-center">
+            <div style="flex: 1.2" class="align-self-center ms-2">
               <p v-if="item.book.discount != 0">
                 <span class="me-2">
                   {{
@@ -64,10 +89,13 @@
                 {{ numberByCommas(parseInt(item.book.price)) }} تومان
               </p>
             </div>
-            <div style="flex: 0.5" class="align-self-center">
+            <div
+              style="flex: 0.5"
+              class="align-self-center d-flex justify-content-center ms-2"
+            >
               <p>{{ item.quantity }}</p>
             </div>
-            <div style="flex: 0.9" class="align-self-center">
+            <div style="flex: 0.9" class="align-self-center ms-2">
               <p>
                 {{
                   numberByCommas(
@@ -78,6 +106,12 @@
                 }}
                 تومان
               </p>
+            </div>
+          </div>
+          <div class="row pt-3 pb-3">
+            <div style="flex: 1"><strong>محل ارسال: </strong></div>
+            <div style="flex: 4">
+              {{ order.state }}، {{ order.city }}، {{ order.address }}
             </div>
           </div>
         </div>
@@ -142,6 +176,7 @@ export default {
       username: "",
       password: "",
       email: "",
+      newEmail: "",
       id: "",
       orders: [],
     };
@@ -168,18 +203,17 @@ export default {
     async getUserInfo() {
       this.$store.commit("setIsLoading", true);
 
-      await axios({
-        method: "get",
-        url: "http://127.0.0.1:8000/api/v1/users/me/",
-        auth: {
-          username: this.username,
-          password: this.password,
-        },
-      })
+      await axios
+        .get("api/v1/users/me", {
+          auth: {
+            username: this.username,
+            password: this.password,
+          },
+        })
         .then((res) => {
           this.id = res.data.id;
           this.email = res.data.email;
-          console.log(res.data);
+          console.log("data: ", res.data);
         })
         .catch((err) => console.log(err));
 
@@ -197,8 +231,40 @@ export default {
 
       this.$store.commit("setIsLoading", false);
     },
+    async postEmail() {
+      this.$store.commit("setIsLoading", true);
+
+      await axios
+        .put(
+          "api/v1/users/me/",
+          {
+            email: this.newEmail,
+          },
+          {
+            auth: {
+              username: this.username,
+              password: this.password,
+            },
+          }
+        )
+        .then((res) => {
+          this.email = this.newEmail;
+          this.newEmail = "";
+          this.$router.push("/my-account");
+        })
+        .catch((err) => {
+          this.errors.push("something went wrong. please try again.");
+          console.log(err);
+        });
+
+      this.$store.commit("setIsLoading", false);
+    },
     numberByCommas(number) {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+
+    clickFade() {
+      document.getElementById("fadeDiv").classList.toggle("fade");
     },
   },
 };
@@ -233,5 +299,16 @@ export default {
 .row-image {
   width: 20%;
   margin-left: 25px;
+}
+
+#fadeDiv {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+}
+
+#fadeDiv.fade {
+  display: block;
+  opacity: 1;
 }
 </style>

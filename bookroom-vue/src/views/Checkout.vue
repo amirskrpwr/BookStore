@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-lg-6">
       <div class="box-element" id="form-wrapper">
-        <form @submit.prevent="submitForm" class="p-2" action="" id="form">
+        <form @submit.prevent="showButton" class="p-2" action="" id="form">
           <div id="shipping-info">
             <h3>اطلاعات ارسال:</h3>
             <hr />
@@ -39,12 +39,10 @@
             </div>
           </div>
           <hr />
-          <input
-            type="submit"
-            class="btn btn-success"
-            id="form-button"
-            value="Continue"
-          />
+
+          <button type="submit" class="btn btn-success" id="form-button">
+            ادامه
+          </button>
         </form>
 
         <div class="p-3 mb-2 bg-danger text-white" v-if="errors.length">
@@ -52,6 +50,18 @@
         </div>
       </div>
       <br />
+      <div
+        class="box-element d-flex justify-content-center hidden"
+        id="complete"
+      >
+        <button
+          class="btn btn-success"
+          data-bs-toggle="modal"
+          data-bs-target="#demo"
+        >
+          تکمیل خرید
+        </button>
+      </div>
     </div>
     <div class="col-lg-6">
       <div class="box-element">
@@ -64,27 +74,27 @@
           <hr />
           <div class="cart-row">
             <div style="flex: 2"></div>
-            <div style="flex: 2"><strong>عنوان</strong></div>
-            <div style="flex: 1.75"><strong>قیمت</strong></div>
-            <div style="flex: 0.5"><strong>تعداد</strong></div>
+            <div style="flex: 2" class="ms-4"><strong>عنوان</strong></div>
+            <div style="flex: 1.75" class="ms-2"><strong>قیمت</strong></div>
+            <div style="flex: 0.5" class="ms-2"><strong>تعداد</strong></div>
           </div>
           <div v-for="item in cart.items" :key="item.id" class="cart-row">
-            <div style="flex: 2">
+            <div style="flex: 2" class="align-self-center">
               <router-link :to="item.book.get_absolute_url">
                 <img
                   :src="item.book.get_image"
                   :alt="item.book.name"
-                  class="row-image"
+                  class="row-image short"
                 />
               </router-link>
             </div>
-            <div style="flex: 2" class="align-self-center">
+            <div style="flex: 2" class="align-self-center ms-4">
               <p>{{ item.book.name }}</p>
             </div>
-            <div style="flex: 1.75" class="align-self-center">
+            <div style="flex: 1.75" class="align-self-center ms-2">
               <p>{{ numberByCommas(parseInt(item.book.price)) }} تومان</p>
             </div>
-            <div style="flex: 0.5" class="align-self-center">
+            <div style="flex: 0.5" class="align-self-center ms-2">
               <p>{{ item.quantity }}</p>
             </div>
           </div>
@@ -92,7 +102,7 @@
             <h6 style="flex: 1">
               <strong>تعداد کتاب ها: </strong>
             </h6>
-            <h6 style="flex: 2">{{ numberByCommas(getTotalCount) }} کتاب</h6>
+            <h6 style="flex: 2">{{ getTotalCount }} کتاب</h6>
           </div>
           <div class="row" v-if="getTotalDiscount">
             <h6 style="flex: 1">
@@ -115,6 +125,52 @@
             <h6 style="flex: 2">
               {{ numberByCommas(getTotalAmount - getTotalDiscount) }} تومان
             </h6>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- modal -->
+    <div
+      class="modal fade"
+      id="demo"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">نهایی کردن خرید</h5>
+            <div class="d-flex flex-row-reverse">
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+          </div>
+          <div class="modal-body">
+            آیا می‌خواهید این {{ getTotalCount }} کتاب را با مجموع
+            {{ numberByCommas(getTotalAmount) }} تومان خریداری کنید؟
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              خیر
+            </button>
+            <button
+              type="button"
+              @click="submitForm"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+            >
+              بله
+            </button>
           </div>
         </div>
       </div>
@@ -171,7 +227,7 @@ export default {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
 
-    async submitForm() {
+    showButton() {
       this.errors = [];
 
       if (this.state === "") {
@@ -184,7 +240,11 @@ export default {
       if (this.address === "") {
         this.errors.push("The address is missing.");
       }
+      if (!this.errors.length)
+        document.getElementById("complete").classList.remove("hidden");
+    },
 
+    async submitForm() {
       const data = {
         complete: true,
         orderItems: this.cart.items,

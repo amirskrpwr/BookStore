@@ -1,132 +1,203 @@
 <template>
-  <div class="row" v-if="getTotalCount">
-    <div class="col-lg-12">
-      <div class="box-element">
-        <router-link to="/" class="btn btn-outline-dark">
-          &#x2190; بازگشت به خرید
-        </router-link>
-        <br /><br />
-        <table class="table">
-          <th>
-            <h6>
-              تعداد کتاب: <strong>{{ numberByCommas(getTotalCount) }}</strong>
-            </h6>
-          </th>
-          <th>
-            <h6>
-              جمع کل:
-              <strong>{{ numberByCommas(getTotalAmount) }} تومان</strong>
-            </h6>
-          </th>
-          <th class="d-flex flex-row-reverse">
-            <router-link
-              to="/cart/checkout"
-              class="btn btn-success"
-              v-if="getTotalCount"
-              id="btn-checkout"
-            >
-              پرداخت
-            </router-link>
-          </th>
-        </table>
-      </div>
-      <br />
-      <div class="box-element">
-        <div class="cart-row">
-          <div style="flex: 1.1"></div>
-          <div style="flex: 1.5"><strong>عنوان</strong></div>
-          <div style="flex: 1"><strong>قیمت</strong></div>
-          <div style="flex: 0.8"><strong>تعداد</strong></div>
-          <div v-if="getTotalDiscount" style="flex: 0.7"></div>
-          <div style="flex: 1"><strong>جمع کل</strong></div>
-          <div style="flex: 0.3"></div>
+  <div>
+    <div class="row" v-if="getTotalCount">
+      <div class="col-lg-12">
+        <div class="box-element">
+          <router-link to="/" class="btn btn-outline-dark">
+            &#x2190; بازگشت به خرید
+          </router-link>
+          <br /><br />
+          <table class="table">
+            <th>
+              <h6>
+                تعداد کتاب: <strong>{{ numberByCommas(getTotalCount) }}</strong>
+              </h6>
+            </th>
+            <th>
+              <h6>
+                جمع کل:
+                <strong>{{ numberByCommas(getTotalAmount) }} تومان</strong>
+              </h6>
+            </th>
+            <th class="d-flex flex-row-reverse">
+              <router-link
+                to="/cart/checkout"
+                class="btn btn-success"
+                v-if="getTotalCount"
+                id="btn-checkout"
+              >
+                پرداخت
+              </router-link>
+            </th>
+          </table>
         </div>
-        <span></span>
-        <div v-for="item in cart.items" :key="item.id" class="cart-row">
-          <div style="flex: 1.1">
-            <router-link :to="item.book.get_absolute_url">
-              <img
-                :src="item.book.get_image"
-                :alt="item.book.name"
-                class="row-image"
-              />
-            </router-link>
+        <br />
+        <div class="box-element">
+          <div class="cart-row">
+            <div style="flex: 1.1"></div>
+            <div class="ms-4" style="flex: 1.5"><strong>عنوان</strong></div>
+            <div style="flex: 1"><strong>قیمت</strong></div>
+            <div style="flex: 0.6"><strong>تعداد</strong></div>
+            <div v-if="getTotalDiscount" style="flex: 0.7"></div>
+            <div style="flex: 1"><strong>جمع کل</strong></div>
+            <div style="flex: 0.2"></div>
           </div>
-          <div style="flex: 1.5" class="align-self-center">
-            {{ item.book.name }}
-          </div>
-          <div style="flex: 1" class="align-self-center">
-            {{ numberByCommas(parseInt(item.book.price)) }} تومان
-          </div>
-          <div style="flex: 0.8" class="align-self-center">
-            <p class="quantity">{{ item.quantity }}</p>
-            <div class="quantity">
-              <img
-                src="../assets/images/arrow-up.png"
-                alt=""
-                @click="incrementQuantity(item)"
-                class="chg-quantity update-cart"
-              />
+          <span></span>
+          <div v-for="item in cart.items" :key="item.id" class="cart-row">
+            <div style="flex: 1.1" class="align-self-center">
+              <router-link :to="item.book.get_absolute_url">
+                <img
+                  :src="item.book.get_image"
+                  :alt="item.book.name"
+                  class="row-image"
+                />
+              </router-link>
+            </div>
+            <div style="flex: 1.5" class="align-self-center ms-4">
+              {{ item.book.name }}
+            </div>
+            <div style="flex: 1" class="align-self-center ms-2">
+              {{ numberByCommas(parseInt(item.book.price)) }} تومان
+            </div>
+            <div style="flex: 0.6" class="align-self-center ms-2">
+              <p class="quantity">{{ item.quantity }}</p>
+              <div class="quantity">
+                <img
+                  v-if="item.quantity === item.book.count"
+                  src="../assets/images/arrow-up.png"
+                  alt=""
+                  @click="incrementQuantity(item)"
+                  class="chg-quantity update-cart"
+                  data-bs-toggle="modal"
+                  data-bs-target="#demo"
+                />
+                <img
+                  v-else
+                  src="../assets/images/arrow-up.png"
+                  alt=""
+                  @click="incrementQuantity(item)"
+                  class="chg-quantity update-cart"
+                />
 
+                <img
+                  v-if="item.quantity > 1"
+                  src="../assets/images/arrow-down.png"
+                  alt=""
+                  @click="decrementQuantity(item)"
+                  class="chg-quantity update-cart"
+                />
+                <img
+                  v-else
+                  src="../assets/images/arrow-down.png"
+                  alt=""
+                  class="chg-quantity update-cart"
+                  data-bs-toggle="modal"
+                  :data-bs-target="'#demo' + item.book.id"
+                />
+              </div>
+            </div>
+            <div
+              v-if="getTotalDiscount"
+              style="flex: 0.7"
+              class="align-self-center ms-2"
+            >
+              <small v-if="item.book.discount != 0" class="text-success">
+                {{
+                  numberByCommas(
+                    parseInt(
+                      (item.book.price * item.book.discount * item.quantity) /
+                        100
+                    )
+                  )
+                }}- تومان
+              </small>
+            </div>
+            <div style="flex: 1" class="align-self-center ms-2">
+              {{
+                numberByCommas(
+                  item.quantity *
+                    item.book.price *
+                    (1 - item.book.discount / 100)
+                )
+              }}
+              تومان
+            </div>
+            <div style="flex: 0.2" class="align-self-center">
               <img
-                v-if="item.quantity > 1"
-                src="../assets/images/arrow-down.png"
-                alt=""
-                @click="decrementQuantity(item)"
-                class="chg-quantity update-cart"
-              />
-              <img
-                v-else
-                src="../assets/images/arrow-down.png"
-                alt=""
-                class="chg-quantity update-cart"
+                src="../assets/images/trash.png"
+                id="trash-icon"
+                alt="trash"
                 data-bs-toggle="modal"
                 :data-bs-target="'#demo' + item.book.id"
               />
             </div>
           </div>
-          <div
-            v-if="getTotalDiscount"
-            style="flex: 0.7"
-            class="align-self-center"
-          >
-            <small v-if="item.book.discount != 0" class="text-success">
-              {{
-                numberByCommas(
-                  parseInt(
-                    (item.book.price * item.book.discount * item.quantity) / 100
-                  )
-                )
-              }}- تومان
-            </small>
-          </div>
-          <div style="flex: 1" class="align-self-center">
-            {{
-              numberByCommas(
-                item.quantity * item.book.price * (1 - item.book.discount / 100)
-              )
-            }}
-            تومان
-          </div>
-          <div style="flex: 0.3" class="align-self-center">
-            <img
-              src="../assets/images/trash.png"
-              id="trash-icon"
-              alt="trash"
-              data-bs-toggle="modal"
-              :data-bs-target="'#demo' + item.book.id"
-            />
+        </div>
+      </div>
+
+      <!-- modal -->
+      <div
+        v-for="item in cart.items"
+        :key="item.book.id"
+        class="modal fade"
+        v-bind:id="['demo' + item.book.id]"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                حذف از سبد خرید
+              </h5>
+              <div class="d-flex flex-row-reverse">
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+            </div>
+            <div class="modal-body">
+              آیا از حذف این کتاب از سبد خرید خود اطمینان دارید؟
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                خیر
+              </button>
+              <button
+                type="button"
+                @click="removeItem(item)"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+              >
+                بله
+              </button>
+            </div>
           </div>
         </div>
+      </div>
+    </div>
+    <div v-else class="d-flex flex-column">
+      <div class="d-flex aligns-items-center justify-content-center empty-cart">
+        <img src="../assets/images/empty-cart.png" alt="empty cart" />
+      </div>
+      <br />
+      <div class="d-flex aligns-items-center justify-content-center">
+        <h5>سبد خرید شما خالی می‌باشد</h5>
       </div>
     </div>
 
     <!-- modal -->
     <div
-      v-for="item in cart.items"
-      :key="item.book.id"
       class="modal fade"
-      v-bind:id="['demo' + item.book.id]"
+      id="demo"
       tabindex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
@@ -134,7 +205,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">حذف از سبد خرید</h5>
+            <h5 class="modal-title" id="exampleModalLabel">تعداد محدود</h5>
             <div class="d-flex flex-row-reverse">
               <button
                 type="button"
@@ -145,36 +216,20 @@
             </div>
           </div>
           <div class="modal-body">
-            آیا از حذف این کتاب از سبد خرید خود اطمینان دارید؟
+            تنها همین تعداد از این کتاب موجود می‌باشد.
           </div>
           <div class="modal-footer">
             <button
               type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              خیر
-            </button>
-            <button
-              type="button"
-              @click="removeItem(item)"
+              @click="logout()"
               class="btn btn-primary"
               data-bs-dismiss="modal"
             >
-              بله
+              تایید
             </button>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  <div v-else class="d-flex flex-column">
-    <div class="d-flex aligns-items-center justify-content-center empty-cart">
-      <img src="../assets/images/empty-cart.png" alt="empty cart" />
-    </div>
-    <br />
-    <div class="d-flex aligns-items-center justify-content-center">
-      <h5>سبد خرید شما خالی می‌باشد</h5>
     </div>
   </div>
 </template>
@@ -228,8 +283,9 @@ export default {
 
   methods: {
     incrementQuantity(item) {
-      item.quantity += 1;
-
+      if (item.quantity < item.book.count) {
+        item.quantity += 1;
+      }
       this.updateCart();
     },
     decrementQuantity(item) {

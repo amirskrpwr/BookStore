@@ -22,13 +22,21 @@
           <br /><br />
         </div>
 
+        <div v-if="illustrator">
+          <span>تصویرگر: </span>
+          <router-link :to="illustrator_slug">{{ illustrator }}</router-link>
+        </div>
+        <br />
+
         <div v-if="publisher">
           <span>ناشر: </span>
           <router-link :to="publisher_slug">{{ publisher }}</router-link>
         </div>
         <br />
+
         <div>سال نشر: {{ book.publish_year }}</div>
         <br />
+
         <div>تعداد صفحات: {{ book.page_count }}</div>
       </div>
       <div class="col-lg-9 col-md-6 mb-3">{{ book.description }}</div>
@@ -48,6 +56,8 @@ export default {
       author_slug: "",
       translator: "",
       translator_slug: "",
+      illustrator: "",
+      illustrator_slug: "",
       publisher: "",
       publisher_slug: "",
     };
@@ -75,6 +85,11 @@ export default {
           if (res.data.translator) {
             this.translator = res.data.translator[0];
             this.translator_slug = res.data.translator[1];
+          }
+
+          if (res.data.illustrator) {
+            this.illustrator = res.data.illustrator[0];
+            this.illustrator_slug = res.data.illustrator[1];
           }
 
           if (res.data.publisher) {

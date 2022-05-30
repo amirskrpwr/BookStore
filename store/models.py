@@ -88,13 +88,36 @@ class Publisher(models.Model):
             return 'http://127.0.0.1:8000' + self.image.url
         return ''
 
+class Illustrator(models.Model):
+    name = models.CharField(max_length=200, null=True)
+    birth_date = models.DateField(null=True, blank=True)
+    birth_place = models.CharField(max_length=200, null=True, blank=True)
+    introduction = models.TextField(blank=True, null=True)
+    image = models.ImageField(null=True, blank=True)
+    slug = models.SlugField()
+    
+    class Meta:
+        ordering = ('name',)
+    
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return f'/illustrator/{self.slug}'
+
+    def get_image(self):
+        if self.image:
+            return 'http://127.0.0.1:8000' + self.image.url
+        return ''
 
 class Book(models.Model):
     name = models.CharField(max_length=200, null=True)
+    count= models.IntegerField(null=True, blank=False)
     author = models.ForeignKey(Author, related_name='books', on_delete=models.CASCADE)
     language = models.CharField(max_length=200, null=True)
-    translator = models.ForeignKey(Author, null=True, related_name="translations", blank=True, on_delete=models.CASCADE)
+    translator = models.ForeignKey(Author, null=True, blank=True, related_name="translations", on_delete=models.CASCADE)
     publisher = models.ForeignKey(Publisher, related_name='books', on_delete=models.CASCADE)
+    illustrator = models.ForeignKey(Illustrator, null=True, blank=True, related_name='books', on_delete=models.CASCADE)    
     category = models.ForeignKey(Category, related_name='books', on_delete=models.CASCADE)
     slug = models.SlugField()
     description = models.TextField(blank=True, null=True)
