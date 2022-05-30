@@ -60,6 +60,24 @@ class AuthorDetail(APIView):
         serializer = AuthorSerializer(author)
         return Response(serializer.data)
 
+class IllustratorList(APIView):
+    def get(self, request, format=None):
+        illustrators = Illustrator.objects.all()
+        serializer = IllustratorsSerializer(illustrators, many=True)
+        return Response(serializer.data)
+
+class IllustratorDetail(APIView):
+    def get_object(self, illustrator_slug):
+        try:
+            return Illustrator.objects.get(slug=illustrator_slug)
+        except Illustrator.DoesNotExist:
+            raise Http404
+    
+    def get(self, request, illustrator_slug, format=None):
+        illustrator = self.get_object(illustrator_slug)
+        serializer = IllustratorSerializer(illustrator)
+        return Response(serializer.data)
+
 class PublisherList(APIView):
     def get(self, request, format=None):
         publishers = Publisher.objects.all()
@@ -134,6 +152,8 @@ def checkout(request):
             quantity = item['quantity'],
         )
         orderItems.append(orderItem)
+        Book.objects.filter(id = item['book']['id']).update(count=item['book']['count']-item['quantity'])    
+        
 
     return Response({"data":"Successfully added."}, status=status.HTTP_201_CREATED)
 
@@ -146,3 +166,14 @@ class MyOrderList(APIView):
         orders = Order.objects.filter(user=request.user)
         serializer = MyOrdersSerializer(orders, many=True)
         return Response(serializer.data)
+
+
+@api_view(['GET'])
+def current_user(request):
+    user = request.user
+    return Response({
+        'username': user.username,
+        'password': user.password,
+        'email': user.email,
+        'id':user.id
+    })
