@@ -10,7 +10,8 @@
           <table class="table">
             <th>
               <h6>
-                تعداد کتاب: <strong>{{ numberByCommas(getTotalCount) }}</strong>
+                تعداد کتاب:
+                <strong>{{ numberByCommas(getTotalCount) }}</strong>
               </h6>
             </th>
             <th>
@@ -235,6 +236,8 @@
 </template>
 
 <script>
+import Toastify from "toastify-js";
+
 export default {
   name: "Cart",
 
@@ -300,6 +303,18 @@ export default {
 
     removeItem(item) {
       this.$store.commit("removeFromCart", item);
+
+      Toastify({
+        text: "کتاب از سبد خرید حذف شد.",
+        duration: 3000,
+        newWindow: true,
+        gravity: "bottom",
+        position: "right",
+        stopOnFocus: true,
+        style: {
+          background: "#ff652f",
+        },
+      }).showToast();
     },
 
     updateCart() {

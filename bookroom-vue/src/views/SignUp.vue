@@ -31,15 +31,13 @@
         />
         <input type="submit" value="ساخت حساب" class="btn" />
         <p>حساب دارید؟ <router-link to="/log-in">ورود به حساب</router-link></p>
-        <div class="p-3 mb-2 bg-danger text-white" v-if="errors.length">
-          <p v-for="error in errors" :key="error.id">{{ error }}</p>
-        </div>
       </form>
     </div>
   </div>
 </template>
 
 <script>
+import Toastify from "toastify-js";
 import axios from "axios";
 
 export default {
@@ -58,15 +56,59 @@ export default {
 
       if (this.username === "") {
         this.errors.push("نام کاربری وارد نشده است");
+        Toastify({
+          text: "نام کاربری وارد نشده است",
+          duration: 3000,
+          newWindow: true,
+          gravity: "bottom",
+          position: "right",
+          stopOnFocus: true,
+          style: {
+            background: "#ff652f",
+          },
+        }).showToast();
       }
       if (this.password === "") {
         this.errors.push("رمزعبور وارد نشده‌است");
+        Toastify({
+          text: "رمزعبور وارد نشده‌است",
+          duration: 3000,
+          newWindow: true,
+          gravity: "bottom",
+          position: "right",
+          stopOnFocus: true,
+          style: {
+            background: "#ff652f",
+          },
+        }).showToast();
       }
       if (this.password.length < 8) {
         this.errors.push("رمزعبور باید حداقل شامل 8 کاراکتر باشد");
+        Toastify({
+          text: "رمزعبور باید حداقل شامل 8 کاراکتر باشد",
+          duration: 3000,
+          newWindow: true,
+          gravity: "bottom",
+          position: "right",
+          stopOnFocus: true,
+          style: {
+            background: "#ff652f",
+          },
+        }).showToast();
       }
       if (this.password !== this.password2) {
         this.errors.push("رمزهای عبور با هم تطابق ندارند");
+        Toastify({
+          text: "رمزهای عبور با هم تطابق ندارند",
+          duration: 3000,
+          newWindow: true,
+          gravity: "bottom",
+          position: "right",
+          stopOnFocus: true,
+          style: {
+            background: "#ff652f",
+          },
+        }).showToast();
       }
 
       if (!this.errors.length) {
@@ -79,17 +121,54 @@ export default {
           .post("api/v1/users/", formData)
           .then((res) => {
             console.log(res);
+
+            Toastify({
+              text: "ثبت نام با موفقیت انجام شد. لطفا وارد شوید.",
+              duration: 3000,
+              newWindow: true,
+              gravity: "bottom",
+              position: "right",
+              stopOnFocus: true,
+              style: {
+                background: "#5cdb95",
+              },
+            }).showToast();
+
             this.$router.push("/log-in");
           })
           .catch((err) => {
             if (err.response) {
               for (const property in err.response.data) {
                 this.errors.push(`${property}:${err.response.data[property]}`);
+
+                Toastify({
+                  text: `${property}:${err.response.data[property]}`,
+                  duration: 3000,
+                  newWindow: true,
+                  gravity: "bottom",
+                  position: "right",
+                  stopOnFocus: true,
+                  style: {
+                    background: "#ff652f",
+                  },
+                }).showToast();
               }
 
               console.log(JSON.stringify(error.response.data));
             } else if (err.message) {
               this.errors.push("مشکلی رخ داده‌است. لطفا دوباره امتحان کنید.");
+
+              Toastify({
+                text: "مشکلی رخ داده‌است. لطفا دوباره امتحان کنید.",
+                duration: 3000,
+                newWindow: true,
+                gravity: "bottom",
+                position: "right",
+                stopOnFocus: true,
+                style: {
+                  background: "#ff652f",
+                },
+              }).showToast();
 
               console.log(JSON.stringify(err));
             }

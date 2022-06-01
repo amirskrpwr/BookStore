@@ -44,10 +44,6 @@
             ادامه
           </button>
         </form>
-
-        <div class="p-3 mb-2 bg-danger text-white" v-if="errors.length">
-          <p v-for="error in errors" :key="error.id">{{ error }}</p>
-        </div>
       </div>
       <br />
       <div
@@ -231,14 +227,50 @@ export default {
       this.errors = [];
 
       if (this.state === "") {
-        this.errors.push("The state is missing.");
+        this.errors.push("فیلد استان وارد نشده‌ است.");
+
+        Toastify({
+          text: "فیلد استان وارد نشده‌ است.",
+          duration: 3000,
+          newWindow: true,
+          gravity: "bottom",
+          position: "right",
+          stopOnFocus: true,
+          style: {
+            background: "#ff652f",
+          },
+        }).showToast();
       }
 
       if (this.city === "") {
-        this.errors.push("The city is missing.");
+        this.errors.push("فیلد شهر وارد نشده‌ است.");
+
+        Toastify({
+          text: "فیلد شهر وارد نشده‌ است.",
+          duration: 3000,
+          newWindow: true,
+          gravity: "bottom",
+          position: "right",
+          stopOnFocus: true,
+          style: {
+            background: "#ff652f",
+          },
+        }).showToast();
       }
       if (this.address === "") {
-        this.errors.push("The address is missing.");
+        this.errors.push("فیلد آدرس وارد نشده‌ است.");
+
+        Toastify({
+          text: "فیلد آدرس وارد نشده است.",
+          duration: 3000,
+          newWindow: true,
+          gravity: "bottom",
+          position: "right",
+          stopOnFocus: true,
+          style: {
+            background: "#ff652f",
+          },
+        }).showToast();
       }
       if (!this.errors.length)
         document.getElementById("complete").classList.remove("hidden");
@@ -266,6 +298,18 @@ export default {
             this.errors.push("something went wrong. please try again.");
             console.log(err);
           });
+
+        Toastify({
+          text: "خرید شما با موفقیت صورت گرفت.",
+          duration: 3000,
+          newWindow: true,
+          gravity: "bottom",
+          position: "right",
+          stopOnFocus: true,
+          style: {
+            background: "#5cdb95",
+          },
+        }).showToast();
 
         this.$store.commit("setIsLoading", false);
       }

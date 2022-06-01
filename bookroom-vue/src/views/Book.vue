@@ -25,8 +25,8 @@
         <div v-if="illustrator">
           <span>تصویرگر: </span>
           <router-link :to="illustrator_slug">{{ illustrator }}</router-link>
+          <br /><br />
         </div>
-        <br />
 
         <div v-if="publisher">
           <span>ناشر: </span>
