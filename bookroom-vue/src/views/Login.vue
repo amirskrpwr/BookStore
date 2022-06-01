@@ -28,20 +28,18 @@
         <input type="submit" value="sign in" class="btn" />
         <p>
           رمز خود را فراموش کرده‌اید؟
-          <router-link to="">اینجا کلیک کنید</router-link>
+          <router-link to="/reset-password">اینجا کلیک کنید</router-link>
         </p>
         <p>
           ثبت نام نکرده‌اید؟ <router-link to="/sign-up">ساخت حساب</router-link>
         </p>
-        <div class="p-3 mb-2 bg-danger text-white" v-if="errors.length">
-          <p v-for="error in errors" :key="error.id">{{ error }}</p>
-        </div>
       </form>
     </div>
   </div>
 </template>
 
 <script>
+import Toastify from "toastify-js";
 import axios from "axios";
 
 export default {
@@ -83,16 +81,50 @@ export default {
           localStorage.setItem("password", formData.password);
           const toPath = this.$route.query.to || "/cart";
 
+          Toastify({
+            text: "ورود با موفقیت انجام شد.",
+            duration: 3000,
+            newWindow: true,
+            gravity: "bottom",
+            position: "right",
+            stopOnFocus: true,
+            style: {
+              background: "#5cdb95",
+            },
+          }).showToast();
+
           this.$router.push(toPath);
         })
         .catch((err) => {
           if (err.response) {
             for (const property in err.response.data) {
               this.errors.push(`${property}: ${err.response.data[property]}`);
+              Toastify({
+                text: `${property}: ${err.response.data[property]}`,
+                duration: 3000,
+                newWindow: true,
+                gravity: "bottom",
+                position: "right",
+                stopOnFocus: true,
+                style: {
+                  background: "#ff652f",
+                },
+              }).showToast();
             }
             console.log(JSON.stringify(err.response.data));
           } else if (err.message) {
-            this.errors.push("Something went wrong. Please try again");
+            this.errors.push("مشکلی پیش آمد لطفا دوباره امتحان کنید.");
+            Toastify({
+              text: "مشکلی پیش آمد لطفا دوباره امتحان کنید.",
+              duration: 3000,
+              newWindow: true,
+              gravity: "bottom",
+              position: "right",
+              stopOnFocus: true,
+              style: {
+                background: "#ff652f",
+              },
+            }).showToast();
             console.log(JSON.stringify(err));
           }
         });

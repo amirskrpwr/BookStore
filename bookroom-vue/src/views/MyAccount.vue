@@ -167,6 +167,7 @@
 </template>
 
 <script>
+import Toastify from "toastify-js";
 import axios from "axios";
 
 export default {
@@ -197,6 +198,18 @@ export default {
       localStorage.removeItem("userid");
 
       this.$store.commit("removeToken");
+
+      Toastify({
+        text: "خروج از حساب با موفقیت انجام شد.",
+        duration: 3000,
+        newWindow: true,
+        gravity: "bottom",
+        position: "right",
+        stopOnFocus: true,
+        style: {
+          background: "#5cdb95",
+        },
+      }).showToast();
 
       this.$router.push("/");
     },

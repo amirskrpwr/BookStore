@@ -86,6 +86,8 @@
 </template>
 
 <script>
+import Toastify from "toastify-js";
+
 export default {
   name: "BookBox",
   props: {
@@ -103,6 +105,17 @@ export default {
         quantity: this.quantity,
       };
 
+      Toastify({
+        text: "کتاب " + item.book.name + " به سبد خرید اضافه شد.",
+        duration: 3000,
+        newWindow: true,
+        gravity: "bottom",
+        position: "right",
+        stopOnFocus: true,
+        style: {
+          background: "#5cdb95",
+        },
+      }).showToast();
       this.$store.commit("addToCart", item);
     },
 
@@ -124,6 +137,18 @@ export default {
 
     removeItem(item) {
       this.$store.commit("removeFromCart", item);
+
+      Toastify({
+        text: "کتاب از سبد خرید حذف شد.",
+        duration: 3000,
+        newWindow: true,
+        gravity: "bottom",
+        position: "right",
+        stopOnFocus: true,
+        style: {
+          background: "#ff652f",
+        },
+      }).showToast();
     },
 
     updateCart() {

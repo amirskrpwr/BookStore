@@ -112,13 +112,6 @@
       </div>
     </nav>
 
-    <div
-      v-bind:class="{ hidden: !$store.state.isLoading }"
-      class="loader-container"
-    >
-      <img src="@/assets/images/loader-img.gif" alt="loader image" />
-    </div>
-
     <section class="container p-5 margin-top">
       <router-view />
     </section>
