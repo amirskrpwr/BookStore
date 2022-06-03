@@ -1,12 +1,11 @@
 from django.http import Http404
 from django.db.models import Q
-from django.shortcuts import render
-from django.contrib.auth.models import User
 
 from rest_framework import status, authentication,permissions
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from .models import *
 from .serializers import *
@@ -34,6 +33,18 @@ class CustomerList(APIView):
     def get(self, request, format=None):
         customers = Customer.objects.all()
         serializer = CustomersSerializer(customers, many=True)
+        return Response(serializer.data)
+
+class CustomerDetail(APIView):
+    def get_object(self, user_id):
+        try:
+            return Customer.objects.get(user=user_id)
+        except Customer.DoesNotExist:
+            raise Http404
+    
+    def get(self, request, user_id, format=None):
+        customer = self.get_object(user_id)
+        serializer = CustomerSerializer(customer)
         return Response(serializer.data)
 
 class CategoryList(APIView):
@@ -177,3 +188,40 @@ def current_user(request):
         'email': user.email,
         'id':user.id
     })
+
+# @api_view(['POST'])
+# def customerModification(request, username):
+#     customer, created = Customer.objects.update_or_create(
+#         user= User.objects.get(id=request.data['user_id']),
+#         defaults={
+#             'birth_date': request.data['customer']['birth_date'],
+#             'first_name': request.data['customer']['first_name'],
+#             'last_name': request.data['customer']['last_name'],            
+#             'image': request.data['image']
+#         }
+#     )
+#     return Response({"data":"Successfully added."}, status=status.HTTP_201_CREATED)
+
+class CustomerModification(APIView):
+    # permission_classes = [permission_classes]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request, format=None):
+        print(request.data)
+        serializer = CustomerSerializer(data=request.data)
+
+        customer, created = Customer.objects.update_or_create(
+            user = User.objects.get(id=request.data.get('user')),
+            defaults={
+                'birth_date': request.data.get('birth_date', None),
+                'first_name': request.data.get('first_name', None),
+                'last_name': request.data.get('last_name', None),                
+                'image': request.data.get('image', None)
+            }
+        )
+
+        if serializer.is_valid():
+            # serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)

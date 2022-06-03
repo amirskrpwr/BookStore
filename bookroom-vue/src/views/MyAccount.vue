@@ -1,49 +1,128 @@
 <template>
   <div>
-    <div>
-      <h1>{{ username }}</h1>
-      <div v-if="email">
-        <h3>
-          {{ email }}
-          <button class="btn btn-primary" @click="clickFade()">
-            تغییر ایمیل
+    <div class="row">
+      <div class="col-lg-3">
+        <img
+          v-if="customer.get_image"
+          :src="customer.get_image"
+          class="img-thumbnail"
+          width="200"
+          height="150"
+          :alt="username"
+        />
+        <img
+          v-else
+          src="../assets/images/default.png"
+          class="img-thumbnail"
+          width="230"
+          :alt="username"
+        />
+        <h1 class="mt-3">{{ username }}</h1>
+        <div class="mt-3">
+          <button
+            class="btn btn-danger mb-3"
+            data-bs-toggle="modal"
+            data-bs-target="#demo"
+          >
+            خروج از حساب
           </button>
-        </h3>
+        </div>
       </div>
-      <div v-else>
-        <button class="btn btn-warning" @click="clickFade()">
-          افزودن ایمیل
+      <div class="col-lg-9">
+        <button class="btn btn-success mb-3" @click="clickFadeModification()">
+          ویرایش اطلاعات
         </button>
-      </div>
-      <div id="fadeDiv">
-        <form
-          @submit.prevent="postEmail()"
-          style="width: 60%"
-          class="d-flex mt-3"
-        >
-          <input
-            class="form-control"
-            name="email"
-            type="email"
-            v-model="newEmail"
-            placeholder="ایمیل خود را وارد نمائید.."
-          />
-          <button class="btn btn-outline-success me-2" type="submit">
-            ثبت ایمیل
-          </button>
-        </form>
-      </div>
-      <br />
-      <div>
-        <button
-          class="btn btn-danger"
-          data-bs-toggle="modal"
-          data-bs-target="#demo"
-        >
-          خروج از حساب
-        </button>
+        <div id="fadeDivModification">
+          <form
+            @submit.prevent="postModification()"
+            class="p-2"
+            action=""
+            id="form"
+          >
+            <div>
+              <div class="row">
+                <div class="col-lg-6">
+                  <input
+                    type="text"
+                    placeholder="نام.."
+                    name="last_name"
+                    id="last_name"
+                    v-model="customer.first_name"
+                    class="form-control mb-2"
+                  />
+                </div>
+                <div class="col-lg-6">
+                  <input
+                    type="text"
+                    placeholder="نام خانوادگی.."
+                    name="last_name"
+                    id="last_name"
+                    v-model="customer.last_name"
+                    class="form-control mb-2"
+                  />
+                </div>
+                <div class="col-lg-6 mb-2 align-self-stretch">
+                  <birth-date-picker
+                    v-model="customer.birth_date"
+                  ></birth-date-picker>
+                </div>
+                <div class="col-lg-6 mb-2 align-self-stretch">
+                  <input
+                    type="file"
+                    name="image"
+                    placeholder="عکس پروفایل را انتخاب کنید"
+                    id="image"
+                    v-on:change="onFileSelected"
+                    accept="image/png, image/gif, image/jpeg, image/jpg"
+                    class="form-control mb-2 text-lowercase"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-success mt-3">
+              ثبت اطلاعات
+            </button>
+          </form>
+          <hr />
+
+          <div v-if="email">
+            <h3 class="text-lowercase">
+              {{ email }}
+              <button class="btn btn-primary" @click="clickFade()">
+                تغییر ایمیل
+              </button>
+            </h3>
+          </div>
+          <div v-else>
+            <button class="btn btn-warning" @click="clickFade()">
+              افزودن ایمیل
+            </button>
+          </div>
+          <div id="fadeDiv">
+            <form
+              @submit.prevent="postEmail()"
+              style="width: 60%"
+              class="d-flex mt-3"
+            >
+              <input
+                class="form-control text-lowercase"
+                name="email"
+                type="email"
+                v-model="newEmail"
+                placeholder="ایمیل خود را وارد نمائید.."
+              />
+              <button class="btn btn-outline-success me-2" type="submit">
+                ثبت ایمیل
+              </button>
+            </form>
+          </div>
+          <br />
+          <br />
+        </div>
       </div>
     </div>
+
     <div v-show="orders.length">
       <hr />
       <h2>سفارشات:</h2>
@@ -89,10 +168,7 @@
                 {{ numberByCommas(parseInt(item.book.price)) }} تومان
               </p>
             </div>
-            <div
-              style="flex: 0.5"
-              class="align-self-center d-flex justify-content-center ms-2"
-            >
+            <div style="flex: 0.5" class="align-self-center ms-2">
               <p>{{ item.quantity }}</p>
             </div>
             <div style="flex: 0.9" class="align-self-center ms-2">
@@ -176,12 +252,15 @@ export default {
     return {
       username: "",
       password: "",
+      customer: {},
+      selectedImage: "",
       email: "",
       newEmail: "",
       id: "",
       orders: [],
     };
   },
+
   mounted() {
     this.username = this.$store.state.username;
     this.password = this.$store.state.password;
@@ -227,6 +306,14 @@ export default {
           this.id = res.data.id;
           this.email = res.data.email;
           console.log("data: ", res.data);
+
+          axios
+            .get(`api/v1/customers/${this.id}`)
+            .then((res) => {
+              this.customer = res.data;
+              console.log(res.data);
+            })
+            .catch((err) => console.log(err));
         })
         .catch((err) => console.log(err));
 
@@ -247,27 +334,132 @@ export default {
     async postEmail() {
       this.$store.commit("setIsLoading", true);
 
-      await axios
-        .put(
-          "api/v1/users/me/",
-          {
-            email: this.newEmail,
+      if (!this.newEmail)
+        Toastify({
+          text: "ایمیل وارد نشده است.",
+          duration: 3000,
+          newWindow: true,
+          gravity: "bottom",
+          position: "right",
+          stopOnFocus: true,
+          style: {
+            background: "#ff652f",
           },
-          {
-            auth: {
-              username: this.username,
-              password: this.password,
+        }).showToast();
+      else
+        await axios
+          .put(
+            "api/v1/users/me/",
+            {
+              email: this.newEmail,
             },
-          }
-        )
+            {
+              auth: {
+                username: this.username,
+                password: this.password,
+              },
+            }
+          )
+          .then((res) => {
+            this.email = this.newEmail;
+            this.newEmail = "";
+
+            Toastify({
+              text: "ایمیل با موفقیت تغییر یافت",
+              duration: 3000,
+              newWindow: true,
+              gravity: "bottom",
+              position: "right",
+              stopOnFocus: true,
+              style: {
+                background: "#5cdb95",
+              },
+            }).showToast();
+
+            this.clickFade();
+          })
+          .catch((err) => {
+            console.log(err);
+
+            Toastify({
+              text: "مشکلی در تغییر ایمیل به وجود آمد.",
+              duration: 3000,
+              newWindow: true,
+              gravity: "bottom",
+              position: "right",
+              stopOnFocus: true,
+              style: {
+                background: "#ff652f",
+              },
+            }).showToast();
+          });
+
+      this.$store.commit("setIsLoading", false);
+    },
+    async postModification() {
+      this.$store.commit("setIsLoading", true);
+
+      const formData = new FormData();
+      this.selectedImage
+        ? formData.append("image", this.selectedImage, this.selectedImage.name)
+        : null;
+      formData.append("first_name", this.customer.first_name);
+      formData.append("last_name", this.customer.last_name);
+      // formData.append("user", this.customer.user);
+      formData.append("user", this.id);
+      formData.append("birth_date", this.customer.birth_date);
+
+      await axios
+        .post("api/v1/customers/", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
         .then((res) => {
-          this.email = this.newEmail;
-          this.newEmail = "";
-          this.$router.push("/my-account");
+          Toastify({
+            text: "اطلاعات با موفقیت ارسال شد.",
+            duration: 3000,
+            newWindow: true,
+            gravity: "bottom",
+            position: "right",
+            stopOnFocus: true,
+            style: {
+              background: "#5cdb95",
+            },
+          }).showToast();
+          location.reload();
+
+          this.clickFadeModification();
         })
         .catch((err) => {
-          this.errors.push("something went wrong. please try again.");
           console.log(err);
+
+          if (err.response.status === 500) {
+            Toastify({
+              text: "اطلاعات با موفقیت ارسال شد.",
+              duration: 3000,
+              newWindow: true,
+              gravity: "bottom",
+              position: "right",
+              stopOnFocus: true,
+              style: {
+                background: "#5cdb95",
+              },
+            }).showToast();
+            location.reload();
+          } else {
+            Toastify({
+              text: "مشکلی در ارسال اطلاعات بوجود آمد.",
+              duration: 3000,
+              newWindow: true,
+              gravity: "bottom",
+              position: "right",
+              stopOnFocus: true,
+              style: {
+                background: "#ff652f",
+              },
+            }).showToast();
+          }
+
+          this.clickFadeModification();
         });
 
       this.$store.commit("setIsLoading", false);
@@ -275,9 +467,15 @@ export default {
     numberByCommas(number) {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
+    onFileSelected(e) {
+      this.selectedImage = e.target.files[0];
+    },
 
     clickFade() {
       document.getElementById("fadeDiv").classList.toggle("fade");
+    },
+    clickFadeModification() {
+      document.getElementById("fadeDivModification").classList.toggle("fade");
     },
   },
 };
@@ -323,5 +521,19 @@ export default {
 #fadeDiv.fade {
   display: block;
   opacity: 1;
+}
+#fadeDivModification {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+}
+
+#fadeDivModification.fade {
+  display: block;
+  opacity: 1;
+}
+
+text-transform {
+  text-transform: lowercase;
 }
 </style>
