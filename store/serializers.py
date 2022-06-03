@@ -175,15 +175,32 @@ class CategorySerializer(serializers.ModelSerializer):
             "get_absolute_url"
         )
 
+class CustomersSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Customer
+        fields =( 
+            "id",
+            "user",
+            "image",
+            "get_image",
+            "first_name",
+            "last_name",
+            "birth_date",
+        )
+        
 class CustomerSerializer(serializers.ModelSerializer):
-    orders = OrdersSerializer(many=True)
 
     class Meta:
         model = Customer
         fields = (
+            "id",
+            "user",
+            "image",
+            "get_image",
             "first_name",
             "last_name",
-            "orders",
+            "birth_date",
         )
 
 
