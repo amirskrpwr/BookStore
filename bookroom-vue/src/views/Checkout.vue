@@ -292,24 +292,37 @@ export default {
           .post("api/v1/checkout/", data)
           .then((res) => {
             this.$store.commit("clearCart");
+
+            Toastify({
+              text: "خرید شما با موفقیت صورت گرفت.",
+              duration: 3000,
+              newWindow: true,
+              gravity: "bottom",
+              position: "right",
+              stopOnFocus: true,
+              style: {
+                background: "#5cdb95",
+              },
+            }).showToast();
+
             this.$router.push("/cart/success");
           })
           .catch((err) => {
             this.errors.push("something went wrong. please try again.");
             console.log(err);
-          });
 
-        Toastify({
-          text: "خرید شما با موفقیت صورت گرفت.",
-          duration: 3000,
-          newWindow: true,
-          gravity: "bottom",
-          position: "right",
-          stopOnFocus: true,
-          style: {
-            background: "#5cdb95",
-          },
-        }).showToast();
+            Toastify({
+              text: "مشکلی در عملیات خرید پیش آمد لطفا دوباره امتحان کنید.",
+              duration: 3000,
+              newWindow: true,
+              gravity: "bottom",
+              position: "right",
+              stopOnFocus: true,
+              style: {
+                background: "#ff652f",
+              },
+            }).showToast();
+          });
 
         this.$store.commit("setIsLoading", false);
       }
