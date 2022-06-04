@@ -31,7 +31,7 @@ def upload_publisher(instance, filename):
 
 
 class Customer (models.Model):
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
     image = models.ImageField(upload_to=upload_customer, null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     first_name = models.CharField(max_length=200, null=True,blank=True)
@@ -152,7 +152,7 @@ class Book(models.Model):
     discount = models.DecimalField(max_digits=7, decimal_places=2, default=0)
     image = models.ImageField(upload_to=upload_book, null=True, blank=True)
     page_count = models.IntegerField(null=True, blank=True)
-    publish_year = models.IntegerField(_('publish_year'), validators=[MinValueValidator(1290), max_value_current_year], null=True, blank=True)
+    publish_year = models.IntegerField(_('publish_year'), validators=[MinValueValidator(1290), max_value_current_year], null=True)
     date_added = models.DateTimeField(auto_now_add=True, blank=True)
 
     class Meta:
@@ -175,12 +175,16 @@ class Book(models.Model):
 
 
 class Order(models.Model):
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     date_order = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=True, null=True, blank=False)
     address = models.CharField(max_length=200, null=True)
     city = models.CharField(max_length=200, null=True)
     state = models.CharField(max_length=200, null=True)
+    date_added = models.DateTimeField(auto_now_add=True, blank=True)
+
+    class Meta:
+        ordering = ('-date_added',) 
 
     def __str__(self):
         return str(self.id)
