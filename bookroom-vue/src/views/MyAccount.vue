@@ -311,6 +311,8 @@ export default {
             .get(`api/v1/customers/${this.id}`)
             .then((res) => {
               this.customer = res.data;
+              this.customer.birth_date =
+                res.data.birth_date === "1000-01-01" ? null : birth_date;
               console.log(res.data);
             })
             .catch((err) => console.log(err));
@@ -403,14 +405,22 @@ export default {
       this.selectedImage
         ? formData.append("image", this.selectedImage, this.selectedImage.name)
         : null;
-      formData.append("first_name", this.customer.first_name);
-      formData.append("last_name", this.customer.last_name);
-      // formData.append("user", this.customer.user);
+      formData.append(
+        "first_name",
+        this.customer.first_name ? this.customer.first_name : ""
+      );
+      formData.append(
+        "last_name",
+        this.customer.last_name ? this.customer.last_name : ""
+      );
       formData.append("user", this.id);
-      formData.append("birth_date", this.customer.birth_date);
+      formData.append(
+        "birth_date",
+        this.customer.birth_date ? this.customer.birth_date : "1000-01-01"
+      );
 
       await axios
-        .post("api/v1/customers/", formData, {
+        .put("api/v1/customers/", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {

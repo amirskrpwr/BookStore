@@ -1,3 +1,4 @@
+from datetime import date
 from django.http import Http404
 from django.db.models import Q
 
@@ -205,21 +206,14 @@ def current_user(request):
 class CustomerModification(APIView):
     parser_classes = [MultiPartParser, FormParser]
 
-    def post(self, request, format=None):
+    def put(self, request, format=None):
         print(request.data)
-        serializer = CustomerSerializer(data=request.data)
 
-        customer, created = Customer.objects.update_or_create(
-            user = User.objects.get(id=request.data.get('user')),
-            defaults={
-                'birth_date': request.data.get('birth_date', None),
-                'first_name': request.data.get('first_name', None),
-                'last_name': request.data.get('last_name', None),                
-                'image': request.data.get('image', None)
-            }
+        Customer.objects.filter(user=request.data.get('user', None)).update(
+            birth_date = request.data.get('birth_date', None),
+            first_name = request.data.get('first_name', None),
+            last_name = request.data.get('last_name', None),                
+            image = request.data.get('image', None)
         )
 
-        if serializer.is_valid():
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"data":"Successfully updated."}, status=status.HTTP_201_CREATED)
