@@ -32,7 +32,7 @@
                 alt="default"
               />
             </div>
-            <h6 class="mt-3 p-2">
+            <h6 class="mt-3 p-2 short">
               {{ publisher.name }}
             </h6>
           </router-link>
@@ -85,5 +85,12 @@ export default {
   background-color: #fff;
   border-radius: 4px;
   padding: 10px;
+}
+
+.short {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

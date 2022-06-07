@@ -11,13 +11,20 @@
             <th>
               <h6>
                 تعداد کتاب:
-                <strong>{{ numberByCommas(getTotalCount) }}</strong>
+                <strong>{{
+                  toFarsiNumber(numberByCommas(getTotalCount))
+                }}</strong>
               </h6>
             </th>
             <th>
               <h6>
                 جمع کل:
-                <strong>{{ numberByCommas(getTotalAmount) }} تومان</strong>
+                <strong
+                  >{{
+                    toFarsiNumber(numberByCommas(getTotalAmount))
+                  }}
+                  تومان</strong
+                >
               </h6>
             </th>
             <th class="d-flex flex-row-reverse">
@@ -49,19 +56,20 @@
               <router-link :to="item.book.get_absolute_url">
                 <img
                   :src="item.book.get_image"
-                  :alt="item.book.name"
+                  :alt="toFarsiNumber(item.book.name)"
                   class="row-image"
                 />
               </router-link>
             </div>
             <div style="flex: 1.5" class="align-self-center ms-4">
-              {{ item.book.name }}
+              {{ toFarsiNumber(item.book.name) }}
             </div>
             <div style="flex: 1" class="align-self-center ms-2">
-              {{ numberByCommas(parseInt(item.book.price)) }} تومان
+              {{ toFarsiNumber(numberByCommas(parseInt(item.book.price))) }}
+              تومان
             </div>
             <div style="flex: 0.6" class="align-self-center ms-2">
-              <p class="quantity">{{ item.quantity }}</p>
+              <p class="quantity">{{ toFarsiNumber(item.quantity) }}</p>
               <div class="quantity">
                 <img
                   v-if="item.quantity === item.book.count"
@@ -104,10 +112,12 @@
             >
               <small v-if="item.book.discount != 0" class="text-success">
                 {{
-                  numberByCommas(
-                    parseInt(
-                      (item.book.price * item.book.discount * item.quantity) /
-                        100
+                  toFarsiNumber(
+                    numberByCommas(
+                      parseInt(
+                        (item.book.price * item.book.discount * item.quantity) /
+                          100
+                      )
                     )
                   )
                 }}- تومان
@@ -115,10 +125,12 @@
             </div>
             <div style="flex: 1" class="align-self-center ms-2">
               {{
-                numberByCommas(
-                  item.quantity *
-                    item.book.price *
-                    (1 - item.book.discount / 100)
+                toFarsiNumber(
+                  numberByCommas(
+                    item.quantity *
+                      item.book.price *
+                      (1 - item.book.discount / 100)
+                  )
                 )
               }}
               تومان
@@ -323,6 +335,12 @@ export default {
 
     numberByCommas(number) {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+
+    toFarsiNumber(n) {
+      const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+
+      return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
     },
   },
 };

@@ -1,7 +1,8 @@
-from dataclasses import field
+from pytz import country_names
 from rest_framework import serializers
 
 from django.contrib.auth.models import User
+from django_countries.serializer_fields import CountryField
 from .models import *
 
 class OrderItemsSerializer(serializers.ModelSerializer):
@@ -11,7 +12,6 @@ class OrderItemsSerializer(serializers.ModelSerializer):
             "book",
             "order",
             "quantity",
-            "date_added",
         )
 
 class BooksSerializer(serializers.ModelSerializer):
@@ -70,12 +70,12 @@ class OrdersSerializer(serializers.ModelSerializer):
         model = Order
         fields = (
             "id",
-            # "customer",
             "complete",
             "orderItems",
             "state",
             "city",
             "address",
+            'date_added',
         )
 
 
@@ -149,6 +149,7 @@ class MyOrdersSerializer(serializers.ModelSerializer):
             "state",
             "city",
             "address",
+            "date_added"
         )
 
 class CategoriesSerializer(serializers.ModelSerializer):
@@ -220,19 +221,24 @@ class AuthorsSerializer(serializers.ModelSerializer):
 class AuthorSerializer(serializers.ModelSerializer):
     books = BookSerializer(many=True)
     translations = BookSerializer(many=True)
+
     class Meta: 
         model= Author
-        fields = (
+        fields = [
             'id',
             'name',
             'birth_date',
             'birth_place',
             'get_image',
+            'get_flag',
             'introduction',
             'books',
+            'country',
             'translations',
             'get_absolute_url'
-        )
+        ]
+            
+        
 class IllustratorsSerializer(serializers.ModelSerializer):
     class Meta: 
         model= Illustrator

@@ -12,6 +12,14 @@
           class="form-control box"
           placeholder="رمز عبور جدید خود را وارد کنید"
         />
+        <input
+          type="password"
+          name="password2"
+          id="password2"
+          v-model="password2"
+          class="form-control box"
+          placeholder="رمز عبور جدید را دوباره وارد کنید"
+        />
         <input type="submit" value="ثبت رمز عبور" class="btn" />
         <div class="p-3 mb-2 bg-danger text-white" v-if="errors.length">
           <p v-for="error in errors" :key="error.id">{{ error }}</p>
@@ -30,6 +38,7 @@ export default {
   data() {
     return {
       password: "",
+      password2: "",
       uid: this.$route.params.uid,
       token: this.$route.params.token,
       errors: [],
@@ -38,46 +47,59 @@ export default {
 
   methods: {
     async resetPassword() {
-      await axios
-        .post("/api/v1/users/reset_password_confirm/", {
-          uid: this.uid,
-          token: this.token,
-          new_password: this.password,
-        })
-        .then((res) => {
-          console.log("email successfully changed.");
+      if (this.password !== this.password2) {
+        Toastify({
+          text: "گذرواژه ها باهم تطابق ندارند.",
+          duration: 3000,
+          newWindow: true,
+          gravity: "bottom",
+          position: "right",
+          stopOnFocus: true,
+          style: {
+            background: "#ff652f",
+          },
+        }).showToast();
+      } else
+        await axios
+          .post("/api/v1/users/reset_password_confirm/", {
+            uid: this.uid,
+            token: this.token,
+            new_password: this.password,
+          })
+          .then((res) => {
+            console.log("email successfully changed.");
 
-          Toastify({
-            text: "رمز عبور با موفقیت تغییر کرد.",
-            duration: 3000,
-            newWindow: true,
-            gravity: "bottom",
-            position: "right",
-            stopOnFocus: true,
-            style: {
-              background: "#5cdb95",
-            },
-          }).showToast();
+            Toastify({
+              text: "رمز عبور با موفقیت تغییر کرد.",
+              duration: 3000,
+              newWindow: true,
+              gravity: "bottom",
+              position: "right",
+              stopOnFocus: true,
+              style: {
+                background: "#5cdb95",
+              },
+            }).showToast();
 
-          this.$router.push("/log-in");
-        })
-        .catch((err) => {
-          console.log(err);
+            this.$router.push("/log-in");
+          })
+          .catch((err) => {
+            console.log(err);
 
-          Toastify({
-            text: "متاسفانه ایمیل تغییر پیدا نکرد . لطفا دوباره امتحان کنید.",
-            duration: 3000,
-            newWindow: true,
-            gravity: "bottom",
-            position: "right",
-            stopOnFocus: true,
-            style: {
-              background: "#ff652f",
-            },
-          }).showToast();
+            Toastify({
+              text: "متاسفانه گذرواژه تغییر پیدا نکرد. لطفا دوباره امتحان کنید.",
+              duration: 3000,
+              newWindow: true,
+              gravity: "bottom",
+              position: "right",
+              stopOnFocus: true,
+              style: {
+                background: "#ff652f",
+              },
+            }).showToast();
 
-          this.$router.push("/log-in");
-        });
+            this.$router.push("/log-in");
+          });
     },
   },
 };

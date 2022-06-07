@@ -6,20 +6,22 @@
         v-bind:to="book.get_absolute_url"
       >
         <img class="thumbnail" :src="book.get_image" :alt="book.image" />
-        <h5 class="p-2 text-black-50 short">{{ book.name }}</h5>
+        <h5 class="p-2 text-black-50 short">{{ toFarsiNumber(book.name) }}</h5>
         <h6 v-if="book.discount != 0" class="p-2 text-black-50">
           <span class="me-3">
             {{
-              numberByCommas(parseInt(book.price * (1 - book.discount / 100)))
+              toFarsiNumber(
+                numberByCommas(parseInt(book.price * (1 - book.discount / 100)))
+              )
             }}
           </span>
           <span class="text-decoration-line-through text-danger">{{
-            numberByCommas(parseInt(book.price))
+            toFarsiNumber(numberByCommas(parseInt(book.price)))
           }}</span>
           تومان
         </h6>
         <h6 v-else class="p-2 text-black-50">
-          {{ numberByCommas(parseInt(book.price)) }} تومان
+          {{ toFarsiNumber(numberByCommas(parseInt(book.price))) }} تومان
         </h6>
       </router-link>
       <div class="d-flex justify-content-between">
@@ -49,11 +51,13 @@
               >
                 +
               </button>
-              <span class="me-2 ms-2">
+              <span class="me-2 ms-2 fs-5">
                 {{
-                  this.$store.state.cart.items.filter(
-                    (item) => item.book.id === book.id
-                  )[0].quantity
+                  toFarsiNumber(
+                    this.$store.state.cart.items.filter(
+                      (item) => item.book.id === book.id
+                    )[0].quantity
+                  )
                 }}
               </span>
               <button
@@ -106,7 +110,10 @@ export default {
       };
 
       Toastify({
-        text: "کتاب " + item.book.name + " به سبد خرید اضافه شد.",
+        text:
+          "کتاب " +
+          this.toFarsiNumber(item.book.name) +
+          " به سبد خرید اضافه شد.",
         duration: 3000,
         newWindow: true,
         gravity: "bottom",
@@ -157,6 +164,11 @@ export default {
 
     numberByCommas(number) {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+    toFarsiNumber(n) {
+      const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+
+      return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
     },
   },
 };

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>{{ author.name }}</h2>
+    <h2><img :src="author.get_flag" height="20" alt="" /> {{ author.name }}</h2>
     <br />
     <div class="row">
       <div class="col-lg-3 col-md-6 mb-3">
@@ -21,7 +21,10 @@
         />
         <div v-if="author.birth_date">
           <br />
-          <div>تاریخ تولد: {{ author.birth_date }}</div>
+          <div>
+            تاریخ تولد:
+            {{ toFarsiNumber(dateOfBirth) }}
+          </div>
         </div>
         <div v-if="author.birth_place">
           <br />
@@ -53,6 +56,7 @@
 
 <script>
 import axios from "axios";
+import moment from "moment";
 import BookBox from "@/components/BookBox.vue";
 
 export default {
@@ -66,6 +70,11 @@ export default {
   },
   mounted() {
     this.getAuthor();
+  },
+  computed: {
+    dateOfBirth() {
+      return moment(String(this.author.birth_date)).format("YYYY/MM/DD");
+    },
   },
   methods: {
     async getAuthor() {
@@ -84,6 +93,10 @@ export default {
 
       this.$store.commit("setIsLoading", false);
     },
+    toFarsiNumber(n) {
+      const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+      return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
+    },
   },
   components: {
     BookBox,
@@ -91,4 +104,11 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.short {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+</style>

@@ -7,8 +7,6 @@ import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
 
 axios.defaults.baseURL = "http://127.0.0.1:8000";
 
-// app.component("DatePicker", Vue3PersianDatetimePicker);
-
 createApp(App)
     .use(Vue3PersianDatetimePicker, {
         name: "BirthDatePicker",
