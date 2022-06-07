@@ -1,8 +1,10 @@
 import datetime
+from email.policy import default
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext as _
+from django_countries.fields import CountryField
 
 # Create your models here.
 def year_choices():
@@ -70,6 +72,7 @@ class Category(models.Model):
 
 class Author(models.Model):
     name = models.CharField(max_length=200, null=True)
+    country = CountryField(default="IR")
     birth_date = models.DateField(null=True, blank=True)
     birth_place = models.CharField(max_length=200, null=True, blank=True)
     image = models.ImageField(upload_to=upload_author, null=True, blank=True)
@@ -92,6 +95,11 @@ class Author(models.Model):
     def get_image(self):
         if self.image:
             return 'http://127.0.0.1:8000' + self.image.url
+        return ''
+
+    def get_flag(self):
+        if self.country:
+            return 'http://127.0.0.1:8000' + self.country.flag
         return ''
 
 

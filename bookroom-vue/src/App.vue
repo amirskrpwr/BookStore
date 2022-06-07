@@ -105,7 +105,7 @@
             <span
               class="translate-middle position-absolute top-0 start-100 badge rounded-pill bg-warning"
             >
-              {{ cartTotalLength }}
+              {{ toFarsiNumber(cartTotalLength) }}
             </span>
           </router-link>
         </div>
@@ -171,6 +171,10 @@ export default {
           this.categoryList = res.data;
         })
         .catch((err) => console.log(err));
+    },
+    toFarsiNumber(n) {
+      const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+      return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
     },
   },
 };

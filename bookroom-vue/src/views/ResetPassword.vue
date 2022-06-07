@@ -39,7 +39,7 @@ export default {
 
   methods: {
     async forgotPassword() {
-      axios
+      await axios
         .post("api/v1/users/reset_password/", {
           email: this.email,
         })

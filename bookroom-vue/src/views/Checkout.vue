@@ -79,39 +79,44 @@
               <router-link :to="item.book.get_absolute_url">
                 <img
                   :src="item.book.get_image"
-                  :alt="item.book.name"
+                  :alt="toFarsiNumber(item.book.name)"
                   class="row-image short"
                 />
               </router-link>
             </div>
             <div style="flex: 2" class="align-self-center ms-4">
-              <p>{{ item.book.name }}</p>
+              <p>{{ toFarsiNumber(item.book.name) }}</p>
             </div>
             <div style="flex: 1.75" class="align-self-center ms-2">
-              <p>{{ numberByCommas(parseInt(item.book.price)) }} تومان</p>
+              <p>
+                {{ toFarsiNumber(numberByCommas(parseInt(item.book.price))) }}
+                تومان
+              </p>
             </div>
             <div style="flex: 0.5" class="align-self-center ms-2">
-              <p>{{ item.quantity }}</p>
+              <p>{{ toFarsiNumber(item.quantity) }}</p>
             </div>
           </div>
           <div class="row">
             <h6 style="flex: 1">
               <strong>تعداد کتاب ها: </strong>
             </h6>
-            <h6 style="flex: 2">{{ getTotalCount }} کتاب</h6>
+            <h6 style="flex: 2">{{ toFarsiNumber(getTotalCount) }} کتاب</h6>
           </div>
           <div class="row" v-if="getTotalDiscount">
             <h6 style="flex: 1">
               <strong>مجموع: </strong>
             </h6>
-            <h6 style="flex: 2">{{ numberByCommas(getTotalAmount) }} تومان</h6>
+            <h6 style="flex: 2">
+              {{ toFarsiNumber(numberByCommas(getTotalAmount)) }} تومان
+            </h6>
           </div>
           <div class="row" v-if="getTotalDiscount">
             <h6 style="flex: 1">
               <strong>مجموع تخفیف: </strong>
             </h6>
             <h6 style="flex: 2" class="text-success">
-              {{ numberByCommas(getTotalDiscount) }} تومان
+              {{ toFarsiNumber(numberByCommas(getTotalDiscount)) }} تومان
             </h6>
           </div>
           <div class="row">
@@ -119,7 +124,10 @@
               <strong>مجموع قابل پرداخت: </strong>
             </h6>
             <h6 style="flex: 2">
-              {{ numberByCommas(getTotalAmount - getTotalDiscount) }} تومان
+              {{
+                toFarsiNumber(numberByCommas(getTotalAmount - getTotalDiscount))
+              }}
+              تومان
             </h6>
           </div>
         </div>
@@ -148,8 +156,9 @@
             </div>
           </div>
           <div class="modal-body">
-            آیا می‌خواهید این {{ getTotalCount }} کتاب را با مجموع
-            {{ numberByCommas(getTotalAmount) }} تومان خریداری کنید؟
+            آیا می‌خواهید این {{ toFarsiNumber(getTotalCount) }} کتاب را با
+            مجموع {{ toFarsiNumber(numberByCommas(getTotalAmount)) }} تومان
+            خریداری کنید؟
           </div>
           <div class="modal-footer">
             <button
@@ -326,6 +335,12 @@ export default {
 
         this.$store.commit("setIsLoading", false);
       }
+    },
+
+    toFarsiNumber(n) {
+      const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+
+      return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
     },
   },
 };
