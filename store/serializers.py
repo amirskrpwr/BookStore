@@ -10,6 +10,8 @@ class OrderItemsSerializer(serializers.ModelSerializer):
         model = OrderItem
         fields = (
             "book",
+            "price",
+            "discount",
             "order",
             "quantity",
         )
@@ -131,6 +133,8 @@ class MyOrderItemsSerializer(serializers.ModelSerializer):
         model = OrderItem
         fields = (
             "book",
+            "price",
+            "discount",
             "order",
             "quantity",
             "date_added",

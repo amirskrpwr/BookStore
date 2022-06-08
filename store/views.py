@@ -138,7 +138,8 @@ def search(request):
     query = request.data.get("query","")
     
     if query:
-        books = Book.objects.filter(Q(name__icontains=query) | Q(description__icontains=query))
+        books = Book.objects.filter(Q(name__icontains=query) | Q(description__icontains=query) | Q(author__name__icontains=query)
+                                     | Q(author__introduction__icontains=query))
         serializer = BooksSerializer(books, many=True)
         return Response(serializer.data)
     else:
@@ -160,6 +161,8 @@ def checkout(request):
     for item in request.data['orderItems']:
         orderItem = OrderItem.objects.create(
             book = Book.objects.get(id=item['book']['id']),
+            price= item['book']['price'],
+            discount= item['book']['discount'],
             order = order,
             quantity = item['quantity'],
         )

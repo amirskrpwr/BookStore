@@ -27,6 +27,17 @@
                 >
               </h6>
             </th>
+            <th>
+              <h6>
+                جمع تخفیف:
+                <strong class="text-success"
+                  >{{
+                    toFarsiNumber(numberByCommas(getTotalDiscount))
+                  }}
+                  تومان</strong
+                >
+              </h6>
+            </th>
             <th class="d-flex flex-row-reverse">
               <router-link
                 to="/cart/checkout"

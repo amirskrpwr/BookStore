@@ -119,6 +119,7 @@ export default {
         gravity: "bottom",
         position: "right",
         stopOnFocus: true,
+        close: false,
         style: {
           background: "#5cdb95",
         },

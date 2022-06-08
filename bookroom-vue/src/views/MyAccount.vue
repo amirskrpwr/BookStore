@@ -127,7 +127,7 @@
       <hr />
       <h2>سفارشات:</h2>
       <br />
-      <div v-for="order in orders" :key="order.id">
+      <div v-for="index in orders.length" :key="orders[index - 1].id">
         <div class="box-element">
           <div class="cart-row">
             <div style="flex: 1.5"></div>
@@ -137,7 +137,11 @@
             <div style="flex: 0.9" class="ms-2"><strong>جمع کل</strong></div>
           </div>
           <span></span>
-          <div v-for="item in order.orderItems" :key="item.id" class="cart-row">
+          <div
+            v-for="item in orders[index - 1].orderItems"
+            :key="item.id"
+            class="cart-row"
+          >
             <div style="flex: 1.5" class="align-self-center">
               <router-link :to="item.book.get_absolute_url">
                 <img
@@ -151,25 +155,23 @@
               <p>{{ toFarsiNumber(item.book.name) }}</p>
             </div>
             <div style="flex: 1.2" class="align-self-center ms-2">
-              <p v-if="item.book.discount != 0">
+              <p v-if="item.discount != 0">
                 <span class="me-2">
                   {{
                     toFarsiNumber(
                       numberByCommas(
-                        parseInt(
-                          item.book.price * (1 - item.book.discount / 100)
-                        )
+                        parseInt(item.price * (1 - item.discount / 100))
                       )
                     )
                   }}
                 </span>
                 <span class="text-decoration-line-through text-danger">{{
-                  toFarsiNumber(numberByCommas(parseInt(item.book.price)))
+                  toFarsiNumber(numberByCommas(parseInt(item.price)))
                 }}</span>
                 تومان
               </p>
               <p v-else>
-                {{ toFarsiNumber(numberByCommas(parseInt(item.book.price))) }}
+                {{ toFarsiNumber(numberByCommas(parseInt(item.price))) }}
                 تومان
               </p>
             </div>
@@ -181,9 +183,7 @@
                 {{
                   toFarsiNumber(
                     numberByCommas(
-                      item.book.price *
-                        item.quantity *
-                        (1 - item.book.discount / 100)
+                      item.price * item.quantity * (1 - item.discount / 100)
                     )
                   )
                 }}
@@ -192,14 +192,23 @@
             </div>
           </div>
           <div class="row pt-3 pb-3">
+            <div style="flex: 1"><strong>جمع کل: </strong></div>
+            <div style="flex: 7">
+              {{
+                toFarsiNumber(numberByCommas(getOrderTotal.split("*")[index]))
+              }}
+              تومان
+            </div>
+          </div>
+          <div class="row pt-3 pb-3">
             <div style="flex: 1"><strong>محل ارسال: </strong></div>
             <div style="flex: 4">
-              {{ order.state }}، {{ order.city }}،
-              {{ toFarsiNumber(order.address) }}
+              {{ orders[index - 1].state }}، {{ orders[index - 1].city }}،
+              {{ toFarsiNumber(orders[index - 1].address) }}
             </div>
             <div style="flex: 1"><strong>زمان سفارش: </strong></div>
             <div style="flex: 2">
-              {{ toFarsiNumber(getPersianDate(order.date_added)) }}
+              {{ toFarsiNumber(getPersianDate(orders[index - 1].date_added)) }}
             </div>
           </div>
         </div>
@@ -280,6 +289,19 @@ export default {
     this.getUserInfo();
     this.getMyOrders();
   },
+  computed: {
+    getOrderTotal() {
+      let total = "";
+      for (let order of this.orders) {
+        let sum = 0;
+        for (let item of order.orderItems) {
+          sum += item.quantity * ((item.price * (100 - item.discount)) / 100);
+        }
+        total += "*" + sum;
+      }
+      return total;
+    },
+  },
   methods: {
     logout() {
       axios.defaults.headers.common["Authorization"] = "";
@@ -288,6 +310,7 @@ export default {
       localStorage.removeItem("username");
       localStorage.removeItem("userid");
 
+      this.$store.commit("clearCart");
       this.$store.commit("removeToken");
 
       Toastify({

@@ -204,25 +204,22 @@ export default {
   computed: {
     getTotalAmount() {
       let total = 0;
-      for (let i = 0; i < this.cart.items.length; i++) {
-        total += this.cart.items[i].quantity * this.cart.items[i].book.price;
+      for (let item of this.cart.items) {
+        total += item.quantity * item.book.price;
       }
       return total;
     },
     getTotalCount() {
       let total = 0;
-      for (let i = 0; i < this.cart.items.length; i++) {
-        total += this.cart.items[i].quantity;
+      for (let item of this.cart.items) {
+        total += item.quantity;
       }
       return total;
     },
     getTotalDiscount() {
       let total = 0;
-      for (let i = 0; i < this.cart.items.length; i++) {
-        total +=
-          ((this.cart.items[i].quantity * this.cart.items[i].book.discount) /
-            100) *
-          this.cart.items[i].book.price;
+      for (let item of this.cart.items) {
+        total += ((item.quantity * item.book.discount) / 100) * item.book.price;
       }
       return total;
     },

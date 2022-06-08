@@ -21,9 +21,9 @@
           placeholder="رمز عبور جدید را دوباره وارد کنید"
         />
         <input type="submit" value="ثبت رمز عبور" class="btn" />
-        <div class="p-3 mb-2 bg-danger text-white" v-if="errors.length">
+        <!-- <div class="p-3 mb-2 bg-danger text-white" v-if="errors.length">
           <p v-for="error in errors" :key="error.id">{{ error }}</p>
-        </div>
+        </div> -->
       </form>
     </div>
   </div>
@@ -47,9 +47,10 @@ export default {
 
   methods: {
     async resetPassword() {
-      if (this.password !== this.password2) {
+      if (this.password === "") {
+        this.errors.push("رمزعبور وارد نشده‌است");
         Toastify({
-          text: "گذرواژه ها باهم تطابق ندارند.",
+          text: "رمزعبور وارد نشده‌است",
           duration: 3000,
           newWindow: true,
           gravity: "bottom",
@@ -59,7 +60,35 @@ export default {
             background: "#ff652f",
           },
         }).showToast();
-      } else
+      } else if (this.password.length < 8) {
+        this.errors.push("رمزعبور باید حداقل شامل 8 کاراکتر باشد");
+        Toastify({
+          text: "رمزعبور باید حداقل شامل 8 کاراکتر باشد",
+          duration: 3000,
+          newWindow: true,
+          gravity: "bottom",
+          position: "right",
+          stopOnFocus: true,
+          style: {
+            background: "#ff652f",
+          },
+        }).showToast();
+      } else if (this.password !== this.password2) {
+        this.errors.push("رمزهای عبور با هم تطابق ندارند");
+        Toastify({
+          text: "رمزهای عبور با هم تطابق ندارند",
+          duration: 3000,
+          newWindow: true,
+          gravity: "bottom",
+          position: "right",
+          stopOnFocus: true,
+          style: {
+            background: "#ff652f",
+          },
+        }).showToast();
+      } else {
+        this.$store.commit("setIsLoading", true);
+
         await axios
           .post("/api/v1/users/reset_password_confirm/", {
             uid: this.uid,
@@ -68,6 +97,8 @@ export default {
           })
           .then((res) => {
             console.log("email successfully changed.");
+
+            this.$store.commit("setIsLoading", false);
 
             Toastify({
               text: "رمز عبور با موفقیت تغییر کرد.",
@@ -86,6 +117,8 @@ export default {
           .catch((err) => {
             console.log(err);
 
+            this.$store.commit("setIsLoading", false);
+
             Toastify({
               text: "متاسفانه گذرواژه تغییر پیدا نکرد. لطفا دوباره امتحان کنید.",
               duration: 3000,
@@ -100,6 +133,7 @@ export default {
 
             this.$router.push("/log-in");
           });
+      }
     },
   },
 };
