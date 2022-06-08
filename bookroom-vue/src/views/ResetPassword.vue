@@ -10,7 +10,7 @@
           id="email"
           v-model="email"
           class="form-control box"
-          placeholder="نام کاربری خود را وارد کنید"
+          placeholder="ایمیل خود را وارد کنید"
         />
         <input type="submit" value="ارسال ایمیل" class="btn" />
         <div class="p-3 mb-2 bg-danger text-white" v-if="errors.length">
@@ -39,12 +39,15 @@ export default {
 
   methods: {
     async forgotPassword() {
+      this.$store.commit("setIsLoading", true);
       await axios
         .post("api/v1/users/reset_password/", {
           email: this.email,
         })
         .then((res) => {
           console.log("email sent to ", this.email);
+
+          this.$store.commit("setIsLoading", false);
 
           Toastify({
             text: "ایمیل به آدرس " + this.email + " فرستاده شد",
@@ -62,6 +65,8 @@ export default {
         })
         .catch((err) => {
           console.log(err);
+
+          this.$store.commit("setIsLoading", false);
 
           Toastify({
             text: "مشکلی پیش آمد. دوباره تلاش کنید.",

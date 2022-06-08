@@ -1,6 +1,14 @@
 <template>
-  <div class="row">
-    <BookBox v-for="book in category.books" :key="book.id" v-bind:book="book" />
+  <div>
+    <h1 class="mb-3">{{ category.name }}</h1>
+    <div class="row">
+      <hr class="mb-4" />
+      <BookBox
+        v-for="book in category.books"
+        :key="book.id"
+        v-bind:book="book"
+      />
+    </div>
   </div>
 </template>
 
