@@ -57,7 +57,7 @@ INSTALLED_APPS = [
     'store'
 ]
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:8080", "https://bookroom-store.herokuapp.com/",]
+CORS_ALLOWED_ORIGINS = ["http://localhost:8080", "https://bookroom-store.herokuapp.com",]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
