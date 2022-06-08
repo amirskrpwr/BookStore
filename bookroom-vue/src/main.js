@@ -5,7 +5,7 @@ import store from "./store";
 import axios from "axios";
 import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
 
-axios.defaults.baseURL = "http://127.0.0.1:8000";
+axios.defaults.baseURL = "https://bookroom-backend.herokuapp.com";
 
 createApp(App)
     .use(Vue3PersianDatetimePicker, {
