@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkbookroom_vue"]=self["webpackChunkbookroom_vue"]||[]).push([[610],{4610:function(n,u,o){o.r(u),o.d(u,{default:function(){return f}});var e=o(3396);const r=(0,e._)("h1",null,"About Page",-1),t=[r];function c(n,u,o,r,c,a){return(0,e.wg)(),(0,e.iD)("div",null,t)}var a={},l=o(89);const s=(0,l.Z)(a,[["render",c]]);var f=s}}]);
+//# sourceMappingURL=610.b3ff7a19.js.map
