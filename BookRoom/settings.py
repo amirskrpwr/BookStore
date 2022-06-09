@@ -75,7 +75,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'BookRoom.urls'
 
 # DOMAIN = 'localhost:8080'
-DOMAIN = 'https://bookroom-store.herokuapp.com'
+DOMAIN = 'bookroom-store.herokuapp.com'
 
 DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
