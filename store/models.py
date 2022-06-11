@@ -204,7 +204,7 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     book = models.ForeignKey(Book, on_delete=models.SET_NULL, blank=True, null=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     discount = models.DecimalField(max_digits=7, decimal_places=2, default=0)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True, null=True)
     quantity = models.IntegerField(default=0, blank=True)
