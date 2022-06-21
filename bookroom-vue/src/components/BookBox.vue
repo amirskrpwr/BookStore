@@ -82,7 +82,7 @@
           class="align-self-end p-1"
           v-if="book.count <= 5 && book.count > 0"
         >
-          <small>تنها {{ book.count }} عدد باقیست</small>
+          <small>تنها {{ toFarsiNumber(book.count) }} عدد باقیست</small>
         </div>
       </div>
     </div>

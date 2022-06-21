@@ -19,9 +19,6 @@ createApp(App)
             altFormat: "YYYY-MM-DD HH:mm",
             color: "#5cdb95",
             autoSubmit: false,
-            //...
-            //... And whatever you want to set as default.
-            //...
         },
     })
     .use(store)
