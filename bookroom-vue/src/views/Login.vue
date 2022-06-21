@@ -25,7 +25,7 @@
           <input type="checkbox" name="" id="remember-me" />
           <label for="remember-me"> به خاطر سپردن</label>
         </div>
-        <input type="submit" value="sign in" class="btn" />
+        <input type="submit" value="ورود" class="btn" />
         <p>
           رمز خود را فراموش کرده‌اید؟
           <router-link to="/reset-password">اینجا کلیک کنید</router-link>

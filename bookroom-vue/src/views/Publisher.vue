@@ -28,14 +28,10 @@
     </div>
     <br />
     <br />
-    <div class="row">
+    <div class="row" v-if="books.length">
       <h2>کتاب‌ها</h2>
       <hr />
-      <BookBox
-        v-for="book in publisher.books"
-        :key="book.id"
-        v-bind:book="book"
-      />
+      <BookBox v-for="book in books" :key="book.id" v-bind:book="book" />
     </div>
   </div>
 </template>
@@ -49,6 +45,7 @@ export default {
   data() {
     return {
       publisher: {},
+      books: [],
     };
   },
   mounted() {
@@ -63,6 +60,7 @@ export default {
         .get(`/api/v1/publishers/${publisher_slug}/`)
         .then((res) => {
           this.publisher = res.data;
+          this.books = this.publisher.books;
           document.title = this.publisher.name + " | BookRoom";
         })
         .catch((err) => console.log(err));

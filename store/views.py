@@ -1,4 +1,3 @@
-from datetime import date
 from django.http import Http404
 from django.db.models import Q
 
@@ -138,8 +137,8 @@ def search(request):
     query = request.data.get("query","")
     
     if query:
-        books = Book.objects.filter(Q(name__icontains=query) | Q(description__icontains=query) | Q(author__name__icontains=query)
-                                     | Q(author__introduction__icontains=query))
+        books = Book.objects.filter(Q(name__icontains=query) | Q(description__icontains=query) 
+                            | Q(author__name__icontains=query) | Q(author__introduction__icontains=query))
         serializer = BooksSerializer(books, many=True)
         return Response(serializer.data)
     else:
@@ -207,16 +206,25 @@ def current_user(request):
 #     return Response({"data":"Successfully added."}, status=status.HTTP_201_CREATED)
 
 class CustomerModification(APIView):
+    # permission_classes = [permission_classes]
     parser_classes = [MultiPartParser, FormParser]
 
-    def put(self, request, format=None):
+    def post(self, request, format=None):
         print(request.data)
+        serializer = CustomerSerializer(data=request.data)
 
-        Customer.objects.filter(user=request.data.get('user', None)).update(
-            birth_date = request.data.get('birth_date', None),
-            first_name = request.data.get('first_name', None),
-            last_name = request.data.get('last_name', None),                
-            image = request.data.get('image', None)
+        customer, created = Customer.objects.update_or_create(
+            user = User.objects.get(id=request.data.get('user')),
+            defaults={
+                'birth_date': request.data.get('birth_date', None),
+                'first_name': request.data.get('first_name', None),
+                'last_name': request.data.get('last_name', None),                
+                'image': request.data.get('image', None)
+            }
         )
 
-        return Response({"data":"Successfully updated."}, status=status.HTTP_201_CREATED)
+        if serializer.is_valid():
+            # serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)

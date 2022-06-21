@@ -8,12 +8,6 @@ const routes = [{
         component: Store,
     },
     {
-        path: "/about",
-        name: "about",
-        component: () =>
-            import ("../views/About.vue"),
-    },
-    {
         path: "/cart",
         name: "cart",
         component: () =>
@@ -67,12 +61,6 @@ const routes = [{
         name: "ResetPasswordConfirm",
         component: () =>
             import ("../views/ResetPasswordConfirmation.vue"),
-    },
-    {
-        path: "/activate/:uid/:token",
-        name: "Activate",
-        component: () =>
-            import ("../views/Activate.vue"),
     },
     {
         path: "/my-account",

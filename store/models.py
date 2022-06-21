@@ -1,5 +1,4 @@
 import datetime
-from email.policy import default
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -40,7 +39,7 @@ class Customer (models.Model):
     last_name = models.CharField(max_length=200, null=True,blank=True)
 
     def __str__(self):
-        return "Customer " + str(self.id)
+        return self.user
 
     def get_absolute_url(self):
         return f'/customers/{self.id}/'

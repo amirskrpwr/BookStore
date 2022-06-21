@@ -435,7 +435,6 @@ export default {
     },
     async postModification() {
       this.$store.commit("setIsLoading", true);
-
       const formData = new FormData();
       this.selectedImage
         ? formData.append("image", this.selectedImage, this.selectedImage.name)
@@ -453,9 +452,8 @@ export default {
         "birth_date",
         this.customer.birth_date ? this.customer.birth_date : "1000-01-01"
       );
-
       await axios
-        .put("api/v1/customers/", formData, {
+        .post("api/v1/customers/", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {
@@ -471,7 +469,6 @@ export default {
             },
           }).showToast();
           location.reload();
-
           this.clickFadeModification();
         })
         .catch((err) => {
