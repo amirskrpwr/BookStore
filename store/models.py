@@ -47,7 +47,7 @@ class Customer (models.Model):
 
     def get_image(self):
         if self.image:
-            return 'https://bookroom-backend.herokuapp.com/' + self.image.url
+            return 'https://bookroom-backend.herokuapp.com' + self.image.url
         return ''
     
        
@@ -119,7 +119,7 @@ class Publisher(models.Model):
 
     def get_image(self):
         if self.image:
-            return 'https://bookroom-backend.herokuapp.com/' + self.image.url
+            return 'https://bookroom-backend.herokuapp.com' + self.image.url
         return ''
 
 class Illustrator(models.Model):
@@ -141,7 +141,7 @@ class Illustrator(models.Model):
 
     def get_image(self):
         if self.image:
-            return 'https://bookroom-backend.herokuapp.com/' + self.image.url
+            return 'https://bookroom-backend.herokuapp.com' + self.image.url
         return ''
 
 class Book(models.Model):
@@ -177,7 +177,7 @@ class Book(models.Model):
 
     def get_image(self):
         if self.image:
-            return 'https://bookroom-backend.herokuapp.com/' + self.image.url
+            return 'https://bookroom-backend.herokuapp.com' + self.image.url
         return ''
 
 
