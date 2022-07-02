@@ -93,12 +93,12 @@ class Author(models.Model):
 
     def get_image(self):
         if self.image:
-            return 'https://bookroom-backend.herokuapp.com/' + self.image.url
+            return 'https://bookroom-backend.herokuapp.com' + self.image.url
         return ''
 
     def get_flag(self):
         if self.country:
-            return 'https://bookroom-backend.herokuapp.com/' + self.country.flag
+            return 'https://bookroom-backend.herokuapp.com' + self.country.flag
         return ''
 
 
