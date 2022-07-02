@@ -42,9 +42,9 @@ class BooksSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         rep = super(BooksSerializer, self).to_representation(instance)
         if instance.author:
-            rep['author'] = [instance.author.name, '/authors/'+instance.author.slug]
+            rep['author'] = [(author.name,'/authors/'+author.slug) for author in instance.author]
         if instance.translator:
-            rep['translator'] = [instance.translator.name, '/authors/'+instance.translator.slug]
+            rep['translator'] = [(translator.name, '/authors/'+translator.slug) for translator in instance.translator]
         if instance.illustrator:
             rep['illustrator'] = [instance.illustrator.name, '/illustrators/'+instance.illustrator.slug]
         if instance.publisher:
