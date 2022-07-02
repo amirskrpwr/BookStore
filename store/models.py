@@ -147,9 +147,9 @@ class Illustrator(models.Model):
 class Book(models.Model):
     name = models.CharField(max_length=200, null=True)
     count= models.IntegerField(null=True, blank=False)
-    author = models.ForeignKey(Author, related_name='books', on_delete=models.CASCADE)
+    author = models.ManyToManyField(Author, related_name='books', on_delete=models.CASCADE)
     language = models.CharField(max_length=200, null=True)
-    translator = models.ForeignKey(Author, null=True, blank=True, related_name="translations", on_delete=models.CASCADE)
+    translator = models.ManyToManyField(Author, null=True, blank=True, related_name="translations", on_delete=models.CASCADE)
     publisher = models.ForeignKey(Publisher, related_name='books', on_delete=models.CASCADE)
     illustrator = models.ForeignKey(Illustrator, null=True, blank=True, related_name='books', on_delete=models.CASCADE)    
     category = models.ForeignKey(Category, related_name='books', on_delete=models.CASCADE)
