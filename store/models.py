@@ -47,7 +47,7 @@ class Customer (models.Model):
 
     def get_image(self):
         if self.image:
-            return 'http://127.0.0.1:8000' + self.image.url
+            return 'https://bookroom-backend.herokuapp.com/' + self.image.url
         return ''
     
        
@@ -93,12 +93,12 @@ class Author(models.Model):
 
     def get_image(self):
         if self.image:
-            return 'http://127.0.0.1:8000' + self.image.url
+            return 'https://bookroom-backend.herokuapp.com/' + self.image.url
         return ''
 
     def get_flag(self):
         if self.country:
-            return 'http://127.0.0.1:8000' + self.country.flag
+            return 'https://bookroom-backend.herokuapp.com/' + self.country.flag
         return ''
 
 
@@ -119,7 +119,7 @@ class Publisher(models.Model):
 
     def get_image(self):
         if self.image:
-            return 'http://127.0.0.1:8000' + self.image.url
+            return 'https://bookroom-backend.herokuapp.com/' + self.image.url
         return ''
 
 class Illustrator(models.Model):
@@ -141,7 +141,7 @@ class Illustrator(models.Model):
 
     def get_image(self):
         if self.image:
-            return 'http://127.0.0.1:8000' + self.image.url
+            return 'https://bookroom-backend.herokuapp.com/' + self.image.url
         return ''
 
 class Book(models.Model):
@@ -177,7 +177,7 @@ class Book(models.Model):
 
     def get_image(self):
         if self.image:
-            return 'http://127.0.0.1:8000' + self.image.url
+            return 'https://bookroom-backend.herokuapp.com/' + self.image.url
         return ''
 
 
